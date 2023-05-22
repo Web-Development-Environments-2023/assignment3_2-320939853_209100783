@@ -1,0 +1,612 @@
+---
+openapi: 3.0.0
+info:
+  title: Best API ever
+  description: This is a API
+  contact:
+    email: you@your-company.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+servers:
+- url: https://virtserver.swaggerhub.com/EITAG_1/HW3.1/1.0.0
+  description: SwaggerHub API Auto Mocking
+tags:
+- name: Auth-user
+  description: Auth Users only calls
+- name: Auth-user-delete
+  description: Auth Users only calls
+- name: Un-Auth-User
+  description: only unauth users
+paths:
+  /register:
+    post:
+      tags:
+      - Un-Auth-User
+      summary: register a user
+      description: providing all the details of the user register
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        "200":
+          description: created
+  /login:
+    post:
+      tags:
+      - Un-Auth-User
+      summary: Login a user
+      description: providing all the details of the user Login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCreds'
+        required: true
+      responses:
+        "200":
+          description: Logged In
+  /logout:
+    post:
+      tags:
+      - Auth-user
+      summary: logout a user that has valid token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/logout_body'
+        required: true
+      responses:
+        "200":
+          description: added successfully
+        "401":
+          description: Unauthorized
+      security:
+      - bearerAuth: []
+  /recipefamily:
+    post:
+      tags:
+      - Auth-user
+      summary: add specific user a family recipe
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/recipefamily_body'
+        required: true
+      responses:
+        "200":
+          description: added successfully
+        "401":
+          description: Unauthorized
+      security:
+      - bearerAuth: []
+    delete:
+      tags:
+      - Auth-user-delete
+      summary: Delete specific user a family recipe
+      parameters:
+      - name: RecipeID
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: rice123
+      - name: username
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: markit
+      responses:
+        "200":
+          description: deleted successfully
+        "401":
+          description: Unauthorized
+      security:
+      - bearerAuth: []
+  /getrecipe/{recipeID}:
+    get:
+      tags:
+      - recipes
+      summary: 'get recipe by id '
+      parameters:
+      - name: recipeID
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Recipe Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Recipe'
+  /getArrayOfRecipes:
+    post:
+      tags:
+      - recipes
+      summary: 'get array of recipe by id '
+      description: ' use this to retrive the user favs or family or private'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/getArrayOfRecipes_body'
+        required: true
+      responses:
+        "200":
+          description: Recipe Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Recipe'
+  /searchrecipe/{pasta}:
+    get:
+      tags:
+      - recipes
+      parameters:
+      - name: pasta
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          example: pasta
+      - name: cuisine
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/cuisine'
+      - name: diet
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/diet'
+      - name: intolerance
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/intolerance'
+      responses:
+        "200":
+          description: Recipes Found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Recipe'
+  /favoriterecipes/{username}:
+    get:
+      tags:
+      - recipes
+      summary: Returns Array of user's favorite recipes
+      parameters:
+      - name: username
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          example: mark123
+      responses:
+        "200":
+          description: Users Favorite Recipes OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Recipe'
+  /familyRecipes/{username}:
+    get:
+      tags:
+      - recipes
+      summary: Returns Array of user's family recipes
+      parameters:
+      - name: username
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          example: mark123
+      responses:
+        "200":
+          description: Users Family Recipes OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Recipe'
+  /personalrecipes/{username}:
+    get:
+      tags:
+      - recipes
+      summary: Returns Array of user's personal recipes
+      parameters:
+      - name: username
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          example: mark123
+      responses:
+        "200":
+          description: Users personal Recipes OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Recipe'
+  /randomrecipes:
+    get:
+      tags:
+      - recipes
+      summary: Return Array of 3 Random Recipes
+      responses:
+        "200":
+          description: 3 Random Recipes from the system
+          content:
+            application/json:
+              schema:
+                maxItems: 3
+                minItems: 3
+                type: array
+                items:
+                  $ref: '#/components/schemas/Recipe'
+  /privateRecipes:
+    post:
+      tags:
+      - Auth-user
+      summary: "Create Recipe, Attach to user's personal"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/privateRecipes_body'
+        required: true
+      responses:
+        "200":
+          description: Recipe Created
+        "401":
+          description: Unauthorized
+      security:
+      - bearerAuth: []
+    delete:
+      tags:
+      - Auth-user-delete
+      summary: Delete Recipe from user's private
+      description: Recipe removed from private
+      parameters:
+      - name: RecipeID
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: rice123
+      - name: username
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: markit
+      responses:
+        "200":
+          description: Recipe Has Been deleted Successfully from user's Favorites
+        "401":
+          description: Unauthorized
+      security:
+      - bearerAuth: []
+  /recipefav:
+    post:
+      tags:
+      - Auth-user
+      summary: Add Recipe to user's favorites
+      description: Recipe Added To Favs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/recipefav_body'
+        required: true
+      responses:
+        "200":
+          description: Recipe Has Been Added Successfully to user's Favorites
+        "401":
+          description: Unauthorized
+      security:
+      - bearerAuth: []
+    delete:
+      tags:
+      - Auth-user-delete
+      summary: Delete Recipe from user's favorites
+      description: Recipe removed from Favs
+      parameters:
+      - name: RecipeID
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: rice123
+      - name: username
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: markit
+      responses:
+        "200":
+          description: Recipe Has Been deleted Successfully from user's Favorites
+        "401":
+          description: Unauthorized
+      security:
+      - bearerAuth: []
+components:
+  schemas:
+    UserCreds:
+      required:
+      - password
+      - username
+      type: object
+      properties:
+        username:
+          type: string
+          example: mark
+        password:
+          type: string
+          format: password
+    User:
+      required:
+      - country
+      - email
+      - firstname
+      - lastname
+      - password
+      - username
+      type: object
+      properties:
+        username:
+          maxLength: 8
+          minLength: 3
+          pattern: "^[a-zA-Z]+$"
+          type: string
+          example: markFag
+        firstname:
+          type: string
+          example: Fag
+        lastname:
+          type: string
+          example: zurkerberg
+        country:
+          type: string
+        password:
+          maximum: 10
+          minLength: 5
+          pattern: |
+            ^(?=.*\d)(?=.*[!@#$%^&*()-_=+`~[\]{}|\\;:'",.<>/?])(?=.*[a-zA-Z]).+$
+          type: string
+          example: abcd12345!
+        email:
+          type: string
+          format: email
+          example: aaa@gmail.com
+        FamilyRecipes:
+          type: array
+          items:
+            type: string
+        LikedRecipes:
+          type: array
+          items:
+            type: string
+    Recipe:
+      required:
+      - howToMake
+      - ingredients
+      - isGfree
+      - isVegan
+      - isVeget
+      - portions
+      - recipeID
+      type: object
+      properties:
+        recipeID:
+          type: string
+          example: pizza_napoletana_1
+        image:
+          type: object
+        name:
+          type: string
+          example: pizza napoletana
+        preperationTime:
+          type: string
+          example: 11hr
+        amountOfLikes:
+          type: integer
+          example: 150
+        isVegan:
+          type: boolean
+          description: Vegan - True/False
+          example: false
+        isVeget:
+          type: boolean
+          description: Vegetarian - True/False
+          example: true
+        isGfree:
+          type: boolean
+          description: Gluten Free - True/False
+          example: false
+        ingredients:
+          type: array
+          items:
+            $ref: '#/components/schemas/Ingredient'
+        portions:
+          type: number
+          description: Amount of Portions
+          example: 3
+        howToMake:
+          type: array
+          items:
+            $ref: '#/components/schemas/Instructions'
+    Instructions:
+      required:
+      - step
+      type: object
+      properties:
+        step:
+          type: string
+          example: add egg wash
+    Ingredient:
+      required:
+      - amount
+      - name
+      type: object
+      properties:
+        name:
+          type: string
+          example: bell pepper
+        amount:
+          type: string
+          example: 2 t-spoons
+    intolerance:
+      type: string
+      enum:
+      - Dairy
+      - Egg
+      - Gluten
+      - Grain
+      - Peanut
+      - Seafood
+      - Sesame
+      - Shellfish
+      - Soy
+      - Sulfite
+      - Tree Nut
+      - Wheat
+    diet:
+      type: string
+      enum:
+      - Gluten Free
+      - Ketogenic
+      - Vegetarian
+      - Lacto-Vegetarian
+      - Ovo-Vegetarian
+      - Vegan
+      - Pescetarian
+      - Paleo
+      - Primal
+      - Whole30
+    cuisine:
+      type: string
+      enum:
+      - African
+      - American
+      - British
+      - Cajun
+      - Caribbean
+      - Chinese
+      - Eastern European
+      - European
+      - French
+      - German
+      - Greek
+      - Indian
+      - Irish
+      - Italian
+      - Japanese
+      - Jewish
+      - Korean
+      - Latin American
+      - Mediterranean
+      - Mexican
+      - Middle Eastern
+      - Nordic
+      - Southern
+      - Spanish
+      - Thai
+      - Vietnamese
+    logout_body:
+      type: object
+      properties:
+        userToken:
+          type: string
+          example: dsa1d2as31
+        userID:
+          type: string
+          example: gaymark
+    recipefamily_body:
+      type: object
+      properties:
+        recipe:
+          $ref: '#/components/schemas/Recipe'
+        userToken:
+          type: string
+          example: asdsadasd213456
+    getArrayOfRecipes_body:
+      type: object
+      properties:
+        recipeIDs:
+          type: array
+          items:
+            type: string
+            example: rice123
+    privateRecipes_body:
+      type: object
+      properties:
+        username:
+          type: string
+          description: Username of creator
+        recipe:
+          type: array
+          description: recipe to Create
+          items:
+            $ref: '#/components/schemas/Recipe'
+    recipefav_body:
+      type: object
+      properties:
+        username:
+          type: string
+          description: UserName of favorites
+          example: marklovesthewe
+        recipeID:
+          type: string
+          description: RecipeID to add to Favorites
+          example: pizza_napoletana_1
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

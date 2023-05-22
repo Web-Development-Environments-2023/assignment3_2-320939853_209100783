@@ -10,6 +10,5 @@ async function getFavoriteRecipes(user_id){
 }
 
 
-
 exports.markAsFavorite = markAsFavorite;
 exports.getFavoriteRecipes = getFavoriteRecipes;
