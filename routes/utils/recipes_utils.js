@@ -23,24 +23,24 @@ async function getRecipeInformation(recipe_id) {
 
 // this func is sending a http request to the domain and return 3 random recipes
 async function handleGetRandomRecipes(number_of_recipes) {
-    return await axios.get(`${api_domain}/recipes/random`, {
+    return await axios.get(`${api_domain}/random`, {
         headers: {
-            apiKey:apikeys_recipes
+            "x-api-key":apikeys_recipes
 
         },
         params: {
-            number:number_of_recipes
+            "number":number_of_recipes
         }
     });
 }
 async function getRandomRecipes(number_of_recipes) {
     let recipe_info = await handleGetRandomRecipes(number_of_recipes);
-    let { recipe1,recipe2,recipe3 } = recipe_info.data;
+    let recipes = recipe_info.data.recipes;
 
     return {
-        recipe1: recipe1,
-        recipe2: recipe2,
-        recipe3: recipe3
+        "recipe1": recipes[0],
+        "recipe2": recipes[1],
+        "recipe3": recipes[2]
         
     }
 }
