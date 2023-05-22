@@ -1,5 +1,7 @@
 const axios = require("axios");
 const api_domain = "https://api.spoonacular.com/recipes";
+require("dotenv").config();
+
 
 
 
@@ -13,10 +15,11 @@ async function getRecipeInformation(recipe_id) {
     return await axios.get(`${api_domain}/${recipe_id}/information`, {
         params: {
             includeNutrition: false,
-            apiKey: process.env.spooncular_apiKey
+            apiKey: process.env.API_Key_Mark
         }
     });
 }
+
 
 
 
@@ -36,7 +39,6 @@ async function getRecipeDetails(recipe_id) {
         
     }
 }
-
 
 
 exports.getRecipeDetails = getRecipeDetails;
