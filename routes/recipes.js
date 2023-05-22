@@ -8,7 +8,7 @@ router.get("/", (req, res) => res.send("im here"));
 /**
  * This path returns a full details of a recipe by its id
  */
-// router.get("/:recipeId", async (req, res, next) => {
+// // router.get("/:recipeId", async (req, res, next) => {
 //   try {
 //     const recipe = await recipes_utils.getRecipeDetails(req.params.recipeId);
 //     res.send(recipe);
@@ -16,12 +16,16 @@ router.get("/", (req, res) => res.send("im here"));
 //     next(error);
 //   }
 // });
+router.get("/randomrecipes", async (req, res, next) => {
+  try {
+    const recipes = await recipes_utils.getRandomRecipes(3);
+    res.send(recipes);
+  } catch (error) {
+    next(error);
+  }
+});
 // 
-// router.get("/Hello", async (req, res, next) => {
-//   try {
-//     const hello = await recipes_utils.Hello();
-//     res.send("Hello!!!");}
-// );
+
 //It'll print p itself
 router.get("/Hello/:p", (req, res) =>{ 
   let itzik = req.query.p;
@@ -33,6 +37,7 @@ router.get("/Bye/:p", (req, res) => {
 let itzik = req.params.p;
 res.send(`Itzik : ${itzik}`);
 })
+
 
 
 
