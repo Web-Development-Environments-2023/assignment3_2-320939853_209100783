@@ -27,7 +27,7 @@ router.get("/randomrecipes", async (req, res, next) => {
 // 
 
 //It'll print p itself
-router.get("/Hello/:p", (req, res) =>{ 
+router.get("/Hello", (req, res) =>{ 
   let itzik = req.query.p;
   // console.log(typeof(itzik));
   res.send(`Itzik : ${itzik}`);
