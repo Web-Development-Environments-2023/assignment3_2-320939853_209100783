@@ -11,12 +11,13 @@ const apikeys_recipes = process.env.APIKEYS_SPOON;
  */
 
 
-async function getRecipeInformation(recipe_id) {
+async function handlegetRecipeDetails(recipe_id,nutritional=false) {
     return await axios.get(`${api_domain}/${recipe_id}/information`, {
-       
+        headers: {
+            "x-api-key":apikeys_recipes
+        },
         params: {
-            includeNutrition: false,
-            apiKey: process.env.APIKEYS_SPOON
+            includeNutrition: nutritional,
         }
     });
 }
@@ -33,20 +34,29 @@ async function handleGetRandomRecipes(number_of_recipes) {
         }
     });
 }
-async function getRandomRecipes(number_of_recipes) {
-    let recipe_info = await handleGetRandomRecipes(number_of_recipes);
-    let recipes = recipe_info.data.recipes;
 
-    return {
-        "recipe1": recipes[0],
-        "recipe2": recipes[1],
-        "recipe3": recipes[2]
-        
-    }
+async function handlegetArrayOfRecipes(recipesIds) {
+    return await axios.get(`${api_domain}/informationBulk`, {
+        headers: {
+            "x-api-key":apikeys_recipes
+
+        },
+        params: {
+            "ids":recipesIds
+        }
+    });
 }
 
-async function getRecipeDetails(recipe_id) {
-    let recipe_info = await getRecipeInformation(recipe_id);
+async function getRandomRecipes(number_of_recipes) {
+    let recipe_info = await handleGetRandomRecipes(number_of_recipes);
+    let recipes = recipe_info.data.recipes
+    
+
+    return recipes
+}
+
+async function getRecipeDetails(recipe_id,nutritional=false) {
+    let recipe_info = await handlegetRecipeDetails(recipe_id,nutritional);
     let { id, title, readyInMinutes, image, aggregateLikes, vegan, vegetarian, glutenFree } = recipe_info.data;
 
     return {
@@ -62,8 +72,16 @@ async function getRecipeDetails(recipe_id) {
     }
 }
 
+async function getArrayOfRecipes(recipesIds) {
+    let recipe_info = await handlegetArrayOfRecipes(recipesIds);
+    return recipe_info.data;
+    
+
+   
+}
+
 
 exports.getRecipeDetails = getRecipeDetails;
-
+exports.getArrayOfRecipes = getArrayOfRecipes;
 exports.getRandomRecipes = getRandomRecipes;
 
