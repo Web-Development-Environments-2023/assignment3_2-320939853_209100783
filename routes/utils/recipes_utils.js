@@ -96,3 +96,4 @@ exports.getRecipeDetails = getRecipeDetails;
 exports.getArrayOfRecipes = getArrayOfRecipes;
 exports.getRandomRecipes = getRandomRecipes;
 
+exports.addnewrecipe = addnewrecipe;
