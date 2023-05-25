@@ -10,7 +10,7 @@ info:
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   version: 1.0.0
 servers:
-- url: https://virtserver.swaggerhub.com/EITAG_1/HW3.1/1.0.0
+- url: http://127.0.0.1:3000/
   description: SwaggerHub API Auto Mocking
 tags:
 - name: Auth-user
@@ -20,7 +20,7 @@ tags:
 - name: Un-Auth-User
   description: only unauth users
 paths:
-  /register:
+  /Register:
     post:
       tags:
       - Un-Auth-User
@@ -34,7 +34,7 @@ paths:
       responses:
         "200":
           description: created
-  /login:
+  /Login:
     post:
       tags:
       - Un-Auth-User
@@ -49,7 +49,7 @@ paths:
       responses:
         "200":
           description: Logged In
-  /logout:
+  /Logout:
     post:
       tags:
       - Auth-user
@@ -67,7 +67,7 @@ paths:
           description: Unauthorized
       security:
       - bearerAuth: []
-  /recipefamily:
+  /users/recipefamily:
     post:
       tags:
       - Auth-user
@@ -113,7 +113,7 @@ paths:
           description: Unauthorized
       security:
       - bearerAuth: []
-  /getrecipe/{recipeID}:
+  /recipes/getrecipe/{recipeID}:
     get:
       tags:
       - recipes
@@ -133,7 +133,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Recipe'
-  /getArrayOfRecipes:
+  /recipes/getArrayOfRecipes:
     post:
       tags:
       - recipes
@@ -152,7 +152,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Recipe'
-  /searchrecipe/{pasta}:
+  /recipes/searchrecipe/{typeof}:
     get:
       tags:
       - recipes
@@ -264,11 +264,20 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Recipe'
-  /randomrecipes:
+  /recipes/randomrecipes:
     get:
       tags:
       - recipes
-      summary: Return Array of 3 Random Recipes
+      parameters:
+        - name: number
+          in: query
+          required: true
+          style: number
+          schema:
+            type: number
+            example: 1234
+      summary: 'Return Array of N Random Recipes'
+      
       responses:
         "200":
           description: 3 Random Recipes from the system
@@ -280,7 +289,7 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Recipe'
-  /privateRecipes:
+  /users/privaterecipes:
     post:
       tags:
       - Auth-user
@@ -327,7 +336,7 @@ paths:
           description: Unauthorized
       security:
       - bearerAuth: []
-  /recipefav:
+  /users/recipefav:
     post:
       tags:
       - Auth-user

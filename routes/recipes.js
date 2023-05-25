@@ -1,7 +1,10 @@
 var express = require("express");
 var router = express.Router();
 const recipes_utils = require("./utils/recipes_utils");
+const e = require("express");
 require("dotenv").config();
+
+router.use(express.json());
 router.get("/", (req, res) => res.send("im here"));
 
 
@@ -16,15 +19,75 @@ router.get("/", (req, res) => res.send("im here"));
 //     next(error);
 //   }
 // });
+
+/**
+ * @description this section is for the GET requests of user 
+ * @method Get 
+ */
+
 router.get("/randomrecipes", async (req, res, next) => {
   try {
-    const recipes = await recipes_utils.getRandomRecipes(3);
+    let number = req.query.number;
+    let recipes = await recipes_utils.getRandomRecipes(number);
     res.send(recipes);
   } catch (error) {
     next(error);
   }
 });
 // 
+
+router.get("/getrecipe/:recipeId", async (req, res, next) => {
+  try {
+    let recipeId = req.params.recipeId;
+    let recipe = await recipes_utils.getRecipeDetails(recipeId);
+    res.send(recipe);
+  } catch (error) {
+    next(error);
+  }
+});
+
+/**
+ * @description this section is for the post requests of user 
+ * @method Post 
+ */
+
+router.post("/getArrayOfRecipes", async (req, res, next) => {
+  try {
+    let recipeIds =  req.body.recipeIds;
+    let recipe = await recipes_utils.getArrayOfRecipes(recipeIds);
+    console.log(typeof(recipe));
+    res.send(recipe);
+  } catch (error) {
+    next(error);
+  }
+});
+
+
+router.post("/addnewrecipe", async (req, res, next) => {
+  try {
+    let {name,Time,Likes,isVegan,isVeget,isGfree,portions,image,instructions,intolerances,cuisine} =  req.body;
+
+    await recipes_utils.addnewrecipe(name,Time,Likes,isVegan,isVeget,isGfree,portions,image,instructions,intolerances,cuisine);
+    console.log(typeof(recipe));
+    res.send(recipe);
+  } catch (error) {
+    next(error);
+  }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //It'll print p itself
 router.get("/Hello", (req, res) =>{ 
