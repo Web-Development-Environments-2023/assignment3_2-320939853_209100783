@@ -63,6 +63,19 @@ router.post("/getArrayOfRecipes", async (req, res, next) => {
 });
 
 
+router.post("/addnewrecipe", async (req, res, next) => {
+  try {
+    let {name,Time,Likes,isVegan,isVeget,isGfree,portions,image,instructions,intolerances,cuisine} =  req.body;
+
+    await recipes_utils.addnewrecipe(name,Time,Likes,isVegan,isVeget,isGfree,portions,image,instructions,intolerances,cuisine);
+    console.log(typeof(recipe));
+    res.send(recipe);
+  } catch (error) {
+    next(error);
+  }
+});
+
+
 
 
 

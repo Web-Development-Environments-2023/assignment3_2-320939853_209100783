@@ -80,6 +80,17 @@ async function getArrayOfRecipes(recipesIds) {
    
 }
 
+/**
+ * @description Do not USE
+ */
+async function addnewrecipe(name,Time,Likes,isVegan,isVeget,isGfree,portions,image,instructions,intolerances,cuisine) {
+
+    let recipe_info = await DButils.execQuery(
+        `INSERT INTO recipes VALUES ('${name}', '${Time}', '${Likes}',
+        '${isVegan}', '${isVeget}', '${isGfree}' '${portions}', '${isVeget}', '${isGfree}')`
+      );
+    return recipe_info.data;
+}
 
 exports.getRecipeDetails = getRecipeDetails;
 exports.getArrayOfRecipes = getArrayOfRecipes;
