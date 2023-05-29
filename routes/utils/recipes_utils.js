@@ -2,6 +2,7 @@ const axios = require("axios");
 const api_domain = "https://api.spoonacular.com/recipes";
 require("dotenv").config();
 const apikeys_recipes = process.env.APIKEYS_SPOON;
+const DButils = require("./DButils");
 
 
 
@@ -12,6 +13,7 @@ const apikeys_recipes = process.env.APIKEYS_SPOON;
 
 
 async function handlegetRecipeDetails(recipe_id,nutritional=false) {
+    //Need To Implement Here Logic of 
     return await axios.get(`${api_domain}/${recipe_id}/information`, {
         headers: {
             "x-api-key":apikeys_recipes
@@ -68,7 +70,6 @@ async function getRecipeDetails(recipe_id,nutritional=false) {
         vegan: vegan,
         vegetarian: vegetarian,
         glutenFree: glutenFree,
-        
     }
 }
 
@@ -79,21 +80,51 @@ async function getArrayOfRecipes(recipesIds) {
 
    
 }
+async function VisitRecipe(username, recipeID, source) {
+    let query = `INSERT INTO visited_recipes (username, recipeID, timestamp, source)
+                 VALUES ('${username}', ${recipeID}, CURRENT_TIMESTAMP(), ${source})`;
+    let result = await DButils.execQuery(query);
+    return result;
+ }
+async function getLastVisitedRecipes(username, limit = 3) {
+    let query = `SELECT recipeID FROM visited_recipes
+                 WHERE username = '${username}'
+                 ORDER BY timestamp DESC
+                 LIMIT ${limit}`;
+    let result = await DButils.execQuery(query);
+    return result;
+}
 
 /**
  * @description Do not USE
  */
-async function addnewrecipe(name,Time,Likes,isVegan,isVeget,isGfree,portions,image,instructions,intolerances,cuisine) {
+async function CreateRecipe(name,Time,Likes,isVegan,isVeget,isGfree,portions,image,instructions,intolerances,cuisine) {
 
     let recipe_info = await DButils.execQuery(
-        `INSERT INTO recipes VALUES ('${name}', '${Time}', '${Likes}',
-        '${isVegan}', '${isVeget}', '${isGfree}' '${portions}', '${isVeget}', '${isGfree}')`
-      );
-    return recipe_info.data;
+        `INSERT INTO recipes (name, Time, Likes, isVegan, isVeget, isGfree, Portions, Image, Instructions, Intolerances, Cuisine)
+         VALUES ('${name}', '${Time}', '${Likes}', '${isVegan}', '${isVeget}', '${isGfree}', '${portions}', '${image}', '${instructions}', '${intolerances}', '${cuisine}')`
+    );
+    console.log("Recipe ID");
+    console.log(recipe_info.insertId);
+    return recipe_info.insertId;
 }
+
+//HERE'S LOGIC OF ADDING RECIPE TO PERSONAL
+// recipes_utils.addRecipeToPersonal(currentUserId, CreatedRecipeID)
+
+// async function addRecipeToPersonal(currentUserId,recipe_id)
+// {
+//     let user_ID = user.user_ID;
+//     let username = awaitDButils.execQuery( `SELECT username FROM users WHERE userID = '${currentUserId}'`)
+//     let Query_Exec = await DButils.execQuery(`INSERT INTO personal_recipes (username, recipeID)
+//     VALUES ('${username}', '${recipe_id}')`);
+//     return Query_Exec.data;
+// }
 
 exports.getRecipeDetails = getRecipeDetails;
 exports.getArrayOfRecipes = getArrayOfRecipes;
 exports.getRandomRecipes = getRandomRecipes;
-
-exports.addnewrecipe = addnewrecipe;
+// exports.addRecipeToPersonal = addRecipeToPersonal;
+exports.CreateRecipe = CreateRecipe;
+exports.VisitRecipe = VisitRecipe;
+exports.getLastVisitedRecipes = getLastVisitedRecipes;
