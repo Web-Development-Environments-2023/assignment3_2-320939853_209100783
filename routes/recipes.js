@@ -6,6 +6,7 @@ require("dotenv").config();
 
 router.use(express.json());
 router.get("/", (req, res) => res.send("im here"));
+const { currentUserId } = require('./auth.js');
 
 
 /**
@@ -63,19 +64,44 @@ router.post("/getArrayOfRecipes", async (req, res, next) => {
 });
 
 
-router.post("/addnewrecipe", async (req, res, next) => {
+
+router.post("/CreateRecipe", async (req, res, next) => {
   try {
     let {name,Time,Likes,isVegan,isVeget,isGfree,portions,image,instructions,intolerances,cuisine} =  req.body;
-
-    await recipes_utils.addnewrecipe(name,Time,Likes,isVegan,isVeget,isGfree,portions,image,instructions,intolerances,cuisine);
-    console.log(typeof(recipe));
-    res.send(recipe);
+    let CreatedRecipeID = await recipes_utils.CreateRecipe(name,Time,Likes,isVegan,isVeget,isGfree,portions,image,instructions,intolerances,cuisine);
+    res.status(200).send({ message: "recipe created", success: true });
+    console.log("YOUR MOM ");
+    //HERE'S LOGIC OF ADDING RECIPE TO PERSONAL
+    // recipes_utils.addRecipeToPersonal(currentUserId, CreatedRecipeID)
   } catch (error) {
     next(error);
   }
 });
 
+router.post("/VisitRecipe", async (req, res, next) => {
+  try {
+    let {username, recipeID, source} =  req.body;
+    let VisitedRecipe = await recipes_utils.VisitRecipe(username, recipeID, source);
+    res.status(200).send({ message: "recipe visited", success: true });
+  } catch (error) {
+    next(error);
+  }
+});
 
+router.get("/VisitedRecipes", async (req,res,next) => {
+  try{
+    //Im not even sure if we need this endpoint
+    //anyway, for testing
+    let {username} = req.body;
+    visitedrecipes = await recipes_utils.getLastVisitedRecipes(username);
+    res.status(200).send({message:"Retrieved Last 3 Visited Recipes ", success: true});
+    console.log(visitedrecipes);
+  }
+  catch(error)
+  {
+    next(error);
+  }
+});
 
 
 

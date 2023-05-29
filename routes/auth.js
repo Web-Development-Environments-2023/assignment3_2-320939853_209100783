@@ -4,6 +4,7 @@ const MySql = require("../routes/utils/MySql");
 const DButils = require("../routes/utils/DButils");
 const bcrypt = require("bcrypt");
 
+
 router.post("/Register", async (req, res, next) => {
   try {
     // parameters exists
@@ -33,8 +34,8 @@ router.post("/Register", async (req, res, next) => {
       parseInt(process.env.bcrypt_saltRounds)
     );
     await DButils.execQuery(
-      `INSERT INTO users VALUES ('${user_details.username}', '${user_details.firstname}', '${user_details.lastname}',
-      '${user_details.country}', '${hash_password}', '${user_details.email}',NULL,NULL)`
+      `INSERT INTO users (username, firstname, lastname, country, password, email) VALUES ('${user_details.username}', '${user_details.firstname}', '${user_details.lastname}',
+      '${user_details.country}', '${hash_password}', '${user_details.email}')`
     );
     res.status(201).send({ message: "user created", success: true });
   } catch (error) {
@@ -55,13 +56,16 @@ router.post("/Login", async (req, res, next) => {
         `SELECT * FROM users WHERE username = '${req.body.username}'`
       )
     )[0];
-
+    console.log(user);
     if (!bcrypt.compareSync(req.body.password, user.password)) {
       throw { status: 401, message: "Username or Password incorrect" };
     }
 
     // Set cookie
     req.session.user_id = user.user_id;
+    currentUserID = user.user_id;
+    console.log("AAAAAA");
+    console.log(user.user_id);
 
 
     // return cookie
@@ -78,3 +82,4 @@ router.post("/Logout", function (req, res) {
 
 
 module.exports = router;
+module.exports
