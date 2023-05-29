@@ -80,51 +80,10 @@ async function getArrayOfRecipes(recipesIds) {
 
    
 }
-async function VisitRecipe(username, recipeID, source) {
-    let query = `INSERT INTO visited_recipes (username, recipeID, timestamp, source)
-                 VALUES ('${username}', ${recipeID}, CURRENT_TIMESTAMP(), ${source})`;
-    let result = await DButils.execQuery(query);
-    return result;
- }
-async function getLastVisitedRecipes(username, limit = 3) {
-    let query = `SELECT recipeID FROM visited_recipes
-                 WHERE username = '${username}'
-                 ORDER BY timestamp DESC
-                 LIMIT ${limit}`;
-    let result = await DButils.execQuery(query);
-    return result;
-}
 
-/**
- * @description Do not USE
- */
-async function CreateRecipe(name,Time,Likes,isVegan,isVeget,isGfree,portions,image,instructions,intolerances,cuisine) {
 
-    let recipe_info = await DButils.execQuery(
-        `INSERT INTO recipes (name, Time, Likes, isVegan, isVeget, isGfree, Portions, Image, Instructions, Intolerances, Cuisine)
-         VALUES ('${name}', '${Time}', '${Likes}', '${isVegan}', '${isVeget}', '${isGfree}', '${portions}', '${image}', '${instructions}', '${intolerances}', '${cuisine}')`
-    );
-    console.log("Recipe ID");
-    console.log(recipe_info.insertId);
-    return recipe_info.insertId;
-}
 
-//HERE'S LOGIC OF ADDING RECIPE TO PERSONAL
-// recipes_utils.addRecipeToPersonal(currentUserId, CreatedRecipeID)
-
-// async function addRecipeToPersonal(currentUserId,recipe_id)
-// {
-//     let user_ID = user.user_ID;
-//     let username = awaitDButils.execQuery( `SELECT username FROM users WHERE userID = '${currentUserId}'`)
-//     let Query_Exec = await DButils.execQuery(`INSERT INTO personal_recipes (username, recipeID)
-//     VALUES ('${username}', '${recipe_id}')`);
-//     return Query_Exec.data;
-// }
 
 exports.getRecipeDetails = getRecipeDetails;
 exports.getArrayOfRecipes = getArrayOfRecipes;
 exports.getRandomRecipes = getRandomRecipes;
-// exports.addRecipeToPersonal = addRecipeToPersonal;
-exports.CreateRecipe = CreateRecipe;
-exports.VisitRecipe = VisitRecipe;
-exports.getLastVisitedRecipes = getLastVisitedRecipes;

@@ -38,33 +38,33 @@ router.post('/favorites', async (req,res,next) => {
   }
 })
 
-router.post('/privaterecipes', async (req,res,next) => {
-  try{
-    const user_id = req.session.user_id;
-    let recipe = req.body.recipe;
-    await user_utils.functions.handleAddPrivateRecipeToUser(user_id,recipe);
-    res.status(200).send("The Recipe successfully saved as favorite");
-    } catch(error){
+
+router.post("/createRecipe", async (req, res, next) => {
+  try {
+    const userId = req.session.user_id;
+    let {name,Time,Likes,isVegan,isVeget,isGfree,portions,image,intolerances,cuisine} =  req.body;
+    let createdRecipeID = await user_utils.functions.handleCreateRecipe(name,Time,Likes,isVegan,isVeget,isGfree,portions,image,intolerances,cuisine);
+    console.log("YOUR MOM ");
+    //HERE'S LOGIC OF ADDING RECIPE TO PERSONAL
+    await user_utils.functions.handleAddRecipeToPersonal(userId, createdRecipeID);
+    res.status(200).send({ message: "recipe created and added to personal ", success: true });
+  } catch (error) {
     next(error);
   }
-})
-/**
- * This path returns the favorites recipes that were saved by the logged-in user
- * @TODO check with mark if this function is neccery I think not
- */
-// router.get('/favorites', async (req,res,next) => {
-//   try{
-//     const user_id = req.session.user_id;
-//     let favorite_recipes = {};
-//     const recipes_id = await user_utils.getFavoriteRecipes(user_id);
-//     let recipes_id_array = [];
-//     recipes_id.map((element) => recipes_id_array.push(element.recipe_id)); //extracting the recipe ids into array
-//     const results = await recipe_utils.getRecipesPreview(recipes_id_array);
-//     res.status(200).send(results);
-//   } catch(error){
-//     next(error); 
-//   }
-// });
+});
+
+router.post("/visitRecipe", async (req, res, next) => {
+  try {
+    const userId = req.session.user_id;
+    let {recipeId, source} =  req.body;
+    await user_utils.functions.handleVisitRecipe(userId, recipeId, source);
+    res.status(200).send({ message: "recipe visited", success: true });
+  } catch (error) {
+    next(error);
+  }
+});
+
+
 
 /**
  * @description this section is for the GET requests of user 
@@ -73,13 +73,45 @@ router.post('/privaterecipes', async (req,res,next) => {
 router.get('/favoriterecipes/:userId', async (req,res,next) => {
   try{
     let requestedUserId = req.params.userId;
-    const user_id = req.session.user_id;
+    
     let favRecipes = await user_utils.functions.handleFavoriteRecipesOfUser(requestedUserId);
     res.status(200).send(favRecipes);
     } catch(error){
     next(error);
   }
-})
+});
+/**
+ * 
+ * 
+ * @todo Eitna finish this 
+ */
+router.get('/privaterecipes', async (req,res,next) => {
+  try{
+    const userId = req.session.user_id;
+    await user_utils.functions.handleAddPrivateRecipeToUser(userId,recipe);
+    res.status(200).send("The Recipe successfully saved as favorite");
+    } catch(error){
+    next(error);
+  }
+});
+
+router.get("/visitedRecipes", async (req,res,next) => {
+  try{
+
+    //Im not even sure if we need this endpoint
+    //anyway, for testing
+    const userId = req.session.user_id;
+    let limit = req.query.limit;
+    let visitedRecipes = await user_utils.handleGetLastVisitedRecipes(userId,limit);
+    res.status(200).send({message:"Retrieved Last 3 Visited Recipes ", success: true,"visitedRecipes":visitedRecipes});
+    console.log(visitedRecipes);
+  }
+  catch(error)
+  {
+    next(error);
+  }
+});
+
 /**
  * @description this section is for the DELETE requests of user 
  * @method Delete 
@@ -130,7 +162,8 @@ router.delete('/recipefamily', async (req,res,next) => {
     } catch(error){
     next(error);
   }
-})
+});
+
 
 
 module.exports = router;

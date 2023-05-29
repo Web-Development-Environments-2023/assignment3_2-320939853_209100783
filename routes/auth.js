@@ -43,6 +43,9 @@ router.post("/Register", async (req, res, next) => {
   }
 });
 
+/**
+ * @todo check how the cookie is set
+ */
 router.post("/Login", async (req, res, next) => {
   try {
     // check that username exists
@@ -63,9 +66,7 @@ router.post("/Login", async (req, res, next) => {
 
     // Set cookie
     req.session.user_id = user.user_id;
-    currentUserID = user.user_id;
-    console.log("AAAAAA");
-    console.log(user.user_id);
+   
 
 
     // return cookie

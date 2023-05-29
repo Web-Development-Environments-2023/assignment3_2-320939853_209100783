@@ -46,6 +46,10 @@ router.get("/getrecipe/:recipeId", async (req, res, next) => {
     next(error);
   }
 });
+/**
+ * @todo Write this endpoint in the yaml file 
+ */
+
 
 /**
  * @description this section is for the post requests of user 
@@ -63,45 +67,12 @@ router.post("/getArrayOfRecipes", async (req, res, next) => {
   }
 });
 
+/**
+ * @todo Write this endpoint in the yaml file 
+ */
 
 
-router.post("/CreateRecipe", async (req, res, next) => {
-  try {
-    let {name,Time,Likes,isVegan,isVeget,isGfree,portions,image,instructions,intolerances,cuisine} =  req.body;
-    let CreatedRecipeID = await recipes_utils.CreateRecipe(name,Time,Likes,isVegan,isVeget,isGfree,portions,image,instructions,intolerances,cuisine);
-    res.status(200).send({ message: "recipe created", success: true });
-    console.log("YOUR MOM ");
-    //HERE'S LOGIC OF ADDING RECIPE TO PERSONAL
-    // recipes_utils.addRecipeToPersonal(currentUserId, CreatedRecipeID)
-  } catch (error) {
-    next(error);
-  }
-});
 
-router.post("/VisitRecipe", async (req, res, next) => {
-  try {
-    let {username, recipeID, source} =  req.body;
-    let VisitedRecipe = await recipes_utils.VisitRecipe(username, recipeID, source);
-    res.status(200).send({ message: "recipe visited", success: true });
-  } catch (error) {
-    next(error);
-  }
-});
-
-router.get("/VisitedRecipes", async (req,res,next) => {
-  try{
-    //Im not even sure if we need this endpoint
-    //anyway, for testing
-    let {username} = req.body;
-    visitedrecipes = await recipes_utils.getLastVisitedRecipes(username);
-    res.status(200).send({message:"Retrieved Last 3 Visited Recipes ", success: true});
-    console.log(visitedrecipes);
-  }
-  catch(error)
-  {
-    next(error);
-  }
-});
 
 
 
