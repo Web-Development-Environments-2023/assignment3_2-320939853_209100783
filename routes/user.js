@@ -3,7 +3,21 @@ var router = express.Router();
 const DButils = require("./utils/DButils");
 const user_utils = require("./utils/user_utils");
 const recipe_utils = require("./utils/recipes_utils");
+const multer = require('multer');
 
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, './static/Images')
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+    const filetype = file.mimetype.split('/')[1];
+    
+    cb(null, uniqueSuffix+"."+filetype)
+  }
+});
+const upload = multer({ storage: storage });
+// const imagehandler = require('multer');
 /**
  * Authenticate all incoming requests by middleware
  */
@@ -36,10 +50,23 @@ router.post('/favorites', async (req,res,next) => {
     } catch(error){
     next(error);
   }
-})
+});
+router.post("/createRecipe/uploadimage", upload.single('image'),async (req, res, next) => {
+  try{
+    if (req.file){
+      let imageFileName = req.file.filename;
+      res.status(200).send({"imagePath":imageFileName})
+    }else{
+      throw new Error("Missing Image file in the request");
+    }
+    
+  }catch(erorr){
+    next(erorr);
+  }
 
+});
 
-router.post("/createRecipe", async (req, res, next) => {
+router.post("/createRecipe",async (req, res, next) => {
   try {
     const userId = req.session.user_id;
     let {name,Time,Likes,isVegan,isVeget,isGfree,portions,image,intolerances,cuisine} =  req.body;
@@ -110,6 +137,25 @@ router.get("/visitedRecipes", async (req,res,next) => {
   {
     next(error);
   }
+});
+
+router.get("/getimage",async (req, res, next) => {
+  try{
+    let imageName = req.query.imageName;
+    res.sendFile(process.env.PATHIMAGES+imageName);
+  }catch(erorr){
+    next(erorr);
+  }
+
+});
+router.delete("/deleteimage",async (req, res, next) => {
+  try{
+    let imageName = req.query.imageName;
+    res.send(user_utils.functions.handleDeleteImage(imageName));
+  }catch(erorr){
+    next(erorr);
+  }
+
 });
 
 /**

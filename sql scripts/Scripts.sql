@@ -154,14 +154,14 @@ better Inserting Them through POSTMAN Login Post Request.
 
 ###### RECIPES ######
 {
-  "name": "Pasta Alla Carbonara ",
+  "name": "Pasta Alla Carbonara",
   "Time": 60,
   "Likes": 0,
   "isVegan": "false",
   "isVeget": "false",
   "isGfree" : "false",
   "portions": 5,
-  "image": "url path to PastaRecipeIMG" ,
+  "image": "./static/1685448591395-888513922.jpeg" ,
   "intolerances": "null",
   "cuisine" : "null"
 }
@@ -173,11 +173,22 @@ better Inserting Them through POSTMAN Login Post Request.
   "isVeget": "false",
   "isGfree" : "true",
   "portions": 2,
-  "image": "url path to Hamburger" ,
+  "image": "./static/1685448591395-888513922.jpeg" ,
   "intolerances": "null",
   "cuisine" : "null"
 }
 
-
+{
+  "name": "Gamburger ",
+  "Time": 15,
+  "Likes": 15,
+  "isVegan": "false",
+  "isVeget": "false",
+  "isGfree" : "true",
+  "portions": 2,
+  "image": "./static/1685448591395-888513922.jpeg" ,
+  "intolerances": "null",
+  "cuisine" : "null"
+}
 
 

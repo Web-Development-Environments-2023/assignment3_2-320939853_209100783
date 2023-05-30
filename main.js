@@ -31,6 +31,7 @@ app.use(express.static(path.join(__dirname, "public"))); //To serve static files
 // and JavaScript files
 //local:
 app.use(express.static(path.join(__dirname, "dist")));
+
 //remote:
 // app.use(express.static(path.join(__dirname, '../assignment-3-3-basic/dist')));
 app.get("/",function(req,res)
@@ -106,3 +107,5 @@ process.on("SIGINT", function () {
   }
   process.exit();
 });
+
+

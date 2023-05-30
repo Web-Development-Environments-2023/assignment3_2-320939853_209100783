@@ -1,5 +1,5 @@
 const DButils = require("./DButils");
-
+const fs = require('fs');
 async function markAsFavorite(user_id, recipe_id){
     await DButils.execQuery(`insert into FavoriteRecipes values ('${user_id}',${recipe_id})`);
 }
@@ -81,7 +81,16 @@ async function handleGetprivaterecipes(userId) {
     let result = await DButils.execQuery(query);
     return result;
 }
+async function handleDeleteImage(imageName) {
+    fs.unlink(process.env.PATHIMAGES+imageName,function(err) {
+        if (err) {
+          throw err
+        } else {
+          return "Image Deleted successfully"
+        }
+    });
 
+}
 
 
 let functions = {
@@ -95,6 +104,7 @@ let functions = {
     handleCreateRecipe,
     handleVisitRecipe,
     handleGetLastVisitedRecipes,
+    handleDeleteImage,
 
 };
 exports.functions = functions
