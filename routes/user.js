@@ -104,14 +104,42 @@ router.post("/visitRecipe", async (req, res, next) => {
  * @description this section is for the GET requests of user 
  * @method Get 
  */
+
+/**
+ * @Example 
+ */
+router.get('/searchrecipe/:dish', async (req,res,next) => {
+  try{
+    let query = req.params.dish;
+    let { cuisine, diet, intolerance, number } = req.query;
+    let recipesStr = ""
+    let recpiesFromSearch = await user_utils.functions.handleGetSearchRecipes(query, cuisine, diet, intolerance, number);
+    recpiesFromSearch.forEach(element =>{
+       recipesStr += element.id+",";
+    });
+    console.log(recipesStr);
+    let ans = await recipe_utils.getArrayOfRecipes(recipesStr);
+    let parsed = recipe_utils.extractInfoFromRecipe(ans);
+    res.status(200).send(parsed);
+    } catch(error){
+    next(error);
+  }
+});
+
+
+
+
 router.get('/favoriterecipes/:userId', async (req,res,next) => {
   try{
     let requestedUserId = req.params.userId;
     
     let favRecipes = await user_utils.functions.handleFavoriteRecipesOfUser(requestedUserId);
+    
+   
     res.status(200).send(favRecipes);
     } catch(error){
     next(error);
+    
   }
 });
 /**
@@ -166,6 +194,13 @@ router.get("/getimage",async (req, res, next) => {
   }
 
 });
+
+
+/**
+ * @description this section is for the DELETE requests of user 
+ * @method Delete 
+ */
+
 router.delete("/deleteimage",async (req, res, next) => {
   try{
     let imageName = req.query.imageName;
@@ -176,10 +211,6 @@ router.delete("/deleteimage",async (req, res, next) => {
 
 });
 
-/**
- * @description this section is for the DELETE requests of user 
- * @method Delete 
- */
 router.delete('/recipefav', async (req,res,next) => {
   try{
     let  userId = req.query.userId;
