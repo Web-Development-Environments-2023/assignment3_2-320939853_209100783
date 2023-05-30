@@ -3,6 +3,8 @@ var router = express.Router();
 const DButils = require("./utils/DButils");
 const user_utils = require("./utils/user_utils");
 const recipe_utils = require("./utils/recipes_utils");
+const ingredients_utils = require("./utils/ingredients_util");
+const steps_utils = require("./utils/steps_util");
 const multer = require('multer');
 
 const storage = multer.diskStorage({
@@ -69,12 +71,17 @@ router.post("/createRecipe/uploadimage", upload.single('image'),async (req, res,
 router.post("/createRecipe",async (req, res, next) => {
   try {
     const userId = req.session.user_id;
-    let {name,Time,Likes,isVegan,isVeget,isGfree,portions,image,intolerances,cuisine} =  req.body;
+    let {name,Time,Likes,isVegan,isVeget,isGfree,portions,image,intolerances,cuisine, ingredients, steps} =  req.body;
     let createdRecipeID = await user_utils.functions.handleCreateRecipe(name,Time,Likes,isVegan,isVeget,isGfree,portions,image,intolerances,cuisine);
-    console.log("YOUR MOM ");
     //HERE'S LOGIC OF ADDING RECIPE TO PERSONAL
     await user_utils.functions.handleAddRecipeToPersonal(userId, createdRecipeID);
-    res.status(200).send({ message: "recipe created and added to personal ", success: true });
+    console.log("YOUR MOM ");
+    //HERE'S LOGIC OF ADDING INGREDIENTS TO RECIPE_INGREDIENT IN DB
+    if(ingredients)
+    {await ingredients_utils.handleCreateIngredient(ingredients,createdRecipeID);}
+    if (steps)
+    {await steps_utils.handleCreateSteps(steps,createdRecipeID);}
+    res.status(200).send({ message: "Recipe Created, Ingredients Created, Steps Created, Recipe Has been Added to Personal Recipes. ", success: true });
   } catch (error) {
     next(error);
   }
@@ -137,19 +144,30 @@ router.get('/favoriterecipes/:userId', async (req,res,next) => {
 });
 /**
  * 
- * 
- * @todo Eitna finish this 
+ *
+ * @returns {Personal_Recipes_Array}, an Array of User's Personal Recipes. 
  */
-router.get('/privaterecipes', async (req,res,next) => {
+router.get('/personalRecipes', async (req,res,next) => {
   try{
     const userId = req.session.user_id;
-    await user_utils.functions.handleAddPrivateRecipeToUser(userId,recipe);
-    res.status(200).send("The Recipe successfully saved as favorite");
+    recipes = await user_utils.functions.handleGetPersonalRecipesOfUser(userId);
+    res.status(200).send({message:"Personal Recipes Retrieved ! ", data:recipes});
     } catch(error){
     next(error);
   }
 });
-
+/**
+ * @returns {Family_Recipes_Array}, an Array of User's Family Recipes.
+ */
+router.get("/familyRecipes", async (req,res,next) => {
+  try{
+    const userId = req.session.user_id;
+    recipes = await user_utils.functions.handleGetFamilyRecipes(userId);
+    res.status(200).send({message:"Family Recipes Retrieved ! ", data:recipes});
+    } catch(error){
+    next(error);
+  }
+})
 router.get("/visitedRecipes", async (req,res,next) => {
   try{
 

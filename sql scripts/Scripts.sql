@@ -76,30 +76,17 @@ CREATE TABLE `first_schema`.`liked_recipes` (
 );
 
 CREATE TABLE `first_schema`.`ingredients` (
+  `recipe_id` INT NOT NULL,
   `ingredient_id` INT NOT NULL AUTO_INCREMENT,
   `ingredient` VARCHAR(150) NOT NULL,
   `amount` INT NOT NULL,
-  PRIMARY KEY (`ingredient_id`, `ingredient`, `amount`));
-
-
-
-CREATE TABLE `first_schema`.`recipes_ingredients` (
-  `recipe_id` INT NOT NULL,
-  `ingredient_id` INT NOT NULL,
-  PRIMARY KEY (`recipe_id`, `ingredient_id`),
-  INDEX `IngIDing_idx` (`ingredient_id` ASC) VISIBLE,
+  `type` VARCHAR(45) NOT NULL,
   CONSTRAINT `recipeIDIng`
     FOREIGN KEY (`recipe_id`)
     REFERENCES `first_schema`.`recipes` (`recipe_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `IngIDing`
-    FOREIGN KEY (`ingredient_id`)
-    REFERENCES `first_schema`.`ingredients` (`ingredient_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION);
+  PRIMARY KEY (`ingredient_id`, `ingredient`, `amount`));
 
-  
+ 
   
 CREATE TABLE `first_schema`.`steps_recipes` (
 	`stepDesc` VARCHAR(255) NOT NULL,
