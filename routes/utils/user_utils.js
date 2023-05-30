@@ -142,8 +142,6 @@ async function handleAddRecipeToPersonal(currentUserId,recipeId)
 
 let functions = {
     markAsFavorite,
-    handleAddPrivateRecipeToUser,
-    handleFavoriteRecipesOfUser,
     handleDeleteFavoriteRecipesOfUser,
     handleDeleteFamilyRecipeOfUser,
     handleAddRecipeToPersonal,
