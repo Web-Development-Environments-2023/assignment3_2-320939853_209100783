@@ -1,5 +1,10 @@
 const DButils = require("./DButils");
+const api_domain = "https://api.spoonacular.com/recipes";
+require("dotenv").config();
+const apikeys_recipes = process.env.APIKEYS_SPOON;
 const fs = require('fs');
+const axios = require("axios");
+
 async function markAsFavorite(user_id, recipe_id){
     await DButils.execQuery(`insert into FavoriteRecipes values ('${user_id}',${recipe_id})`);
 }
@@ -68,6 +73,23 @@ async function handleGetLastVisitedRecipes(userId, limit = 3) {
     let result = await DButils.execQuery(query);
     return result;
 }
+
+async function handleGetSearchRecipes( query, cuisine, diet, intolerance, number = 5 ) {
+    let ans =  await axios.get(`${api_domain}/complexSearch`, {
+        headers: {
+            "x-api-key":apikeys_recipes
+        },
+        params: {
+            "query":query,
+            "cuisine": cuisine,
+            "diet":diet,
+            "intolerances":intolerance,
+            "number":number
+        }
+    });
+    return ans.data.results;
+}
+
 /**
  * 
  * 
@@ -105,6 +127,7 @@ let functions = {
     handleVisitRecipe,
     handleGetLastVisitedRecipes,
     handleDeleteImage,
+    handleGetSearchRecipes,
 
 };
 exports.functions = functions

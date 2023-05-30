@@ -81,9 +81,31 @@ async function getArrayOfRecipes(recipesIds) {
    
 }
 
+function extractInfoFromRecipe(recipesArr){
+    let parsedRecipes = [];
+    recipesArr.forEach(element =>{
+        let filteredRecpie = {
+            "vegetarian": element.vegetarian,
+            "vegan": element.vegan,
+            "glutenFree": element.glutenFree,
+            "dairyFree": element.dairyFree,
+            "extendedIngredients": element.extendedIngredients,
+            "id": element.id,
+            "title": element.title,
+            "readyInMinutes": element.readyInMinutes,
+            "servings": element.servings,
+            "image": element.image,
+            "cuisines": element.cuisines,
+            "diets" : element.diets,
+            "analyzedInstructions" : element.analyzedInstructions,
+        };
+        parsedRecipes.push(filteredRecpie);
+    });
+    return parsedRecipes;
 
+}
 
-
+exports.extractInfoFromRecipe = extractInfoFromRecipe;
 exports.getRecipeDetails = getRecipeDetails;
 exports.getArrayOfRecipes = getArrayOfRecipes;
 exports.getRandomRecipes = getRandomRecipes;
