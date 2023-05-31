@@ -150,7 +150,29 @@ better Inserting Them through POSTMAN Login Post Request.
   "portions": 5,
   "image": "./static/1685448591395-888513922.jpeg" ,
   "intolerances": "null",
-  "cuisine" : "null"
+  "cuisine" : "null",
+  "ingredients" : [
+      {
+          "name" : "Flour",
+          "amount" : 500,
+          "type" : "Grams"
+      },
+      {
+          "name" : "Cream",
+          "amount" : 300,
+          "type" : "mililiters"
+      },
+      {
+          "name" : "Parmegiano Cheese",
+          "amount" : 100,
+          "type" : "Grams"
+      },
+      {
+          "name" : "Eggs",
+          "amount" : 7,
+          "type" : "units"
+      }],
+    "steps": null
 }
 {
   "name": "Hamburger ",

@@ -43,7 +43,7 @@ router.use(async function (req, res, next) {
  * @description this section is for the post requests of user 
  * @method Post 
  */
-router.post('/favorites', async (req,res,next) => {
+router.post('/addFavorite', async (req,res,next) => {
   try{
     const user_id = req.session.user_id;
     const recipe_id = req.body.recipeId;
@@ -53,6 +53,7 @@ router.post('/favorites', async (req,res,next) => {
     next(error);
   }
 });
+//TODO : ADD TO YAML
 router.post("/createRecipe/uploadimage", upload.single('image'),async (req, res, next) => {
   try{
     if (req.file){
@@ -65,7 +66,6 @@ router.post("/createRecipe/uploadimage", upload.single('image'),async (req, res,
   }catch(erorr){
     next(erorr);
   }
-
 });
 
 router.post("/createRecipe",async (req, res, next) => {
@@ -97,6 +97,19 @@ router.post("/visitRecipe", async (req, res, next) => {
     next(error);
   }
 });
+
+router.post("/LikeRecipe", async (req, res, next) => {
+  try {
+    const userId = req.session.user_id;
+    let {recipeId} =  req.body;
+    await user_utils.functions.handleAddLikedRecipe(userId, recipeId);
+    res.status(200).send({ message: "recipe Liked Successfully", success: true });
+  } catch (error) {
+    next(error);
+  }
+});
+
+
 
 
 /**
@@ -155,6 +168,7 @@ router.get("/visitedRecipes", async (req,res,next) => {
     next(error);
   }
 });
+//TODO : ADD TO YAML
 router.get("/getimage",async (req, res, next) => {
   try{
     let imageName = req.query.imageName;
@@ -165,7 +179,7 @@ router.get("/getimage",async (req, res, next) => {
 
 });
 
-router.get('/searchrecipe/:dish', async (req,res,next) => {
+router.get("/searchrecipe/:dish", async (req,res,next) => {
   try{
     let query = req.params.dish;
     let { cuisine, diet, intolerance, number } = req.query;
@@ -188,7 +202,7 @@ router.get('/searchrecipe/:dish', async (req,res,next) => {
  * @description this section is for the DELETE requests of user 
  * @method Delete 
  */
- 
+ //TODO : ADD TO YAML
 router.delete("/deleteimage",async (req, res, next) => {
   try{
     let imageName = req.query.imageName;
@@ -199,10 +213,10 @@ router.delete("/deleteimage",async (req, res, next) => {
 
 });
 
-router.delete('/recipefav', async (req,res,next) => {
+router.delete('/removeFavoriteRecipe', async (req,res,next) => {
   try{
-    let  userId = req.query.userId;
-    let recipeId = req.query.recipeId;
+    let userId = req.body.userId;
+    let recipeId = req.body.recipeId;
     const sessionUser_id = req.session.user_id;
     if (userId === sessionUser_id){
       await user_utils.functions.handleDeleteFavoriteRecipesOfUser(userId,recipeId);
@@ -215,13 +229,13 @@ router.delete('/recipefav', async (req,res,next) => {
   }
 })
 
-router.delete('/privaterecipes', async (req,res,next) => {
+router.delete('/removePersonalRecipe', async (req,res,next) => {
   try{
     let userId = req.query.userId;
     let recipeId = req.query.recipeId;
     const sessionUser_id = req.session.user_id;
     if (userId === sessionUser_id){
-      await user_utils.functions.handleDeleteFavoriteRecipesOfUser(userId,recipeId);
+      await user_utils.functions.handleDeletePersonalRecipe(userId,recipeId);
       res.status(200).send(favRecipes);
     }else{
       throw new Error("The user that is trying to delete this recipe is not the one who is logged in");
@@ -231,7 +245,7 @@ router.delete('/privaterecipes', async (req,res,next) => {
   }
 })
 
-router.delete('/recipefamily', async (req,res,next) => {
+router.delete('/removeFamilyRecipe', async (req,res,next) => {
   try{
     let userId = req.query.userId;
     let recipeId = req.query.recipeId;
@@ -246,6 +260,23 @@ router.delete('/recipefamily', async (req,res,next) => {
     next(error);
   }
 });
+router.delete('/removeLikedRecipe', async (req,res,next) => {
+  try{
+    let userId = req.query.userId;
+    let recipeId = req.query.recipeId;
+    const sessionUser_id = req.session.user_id;
+    if (userId === sessionUser_id){
+      await user_utils.functions.handleDeleteLikedRecipe(userId,recipeId);
+      res.status(200).send(favRecipes);
+    }else{
+      throw new Error("The user that is trying to delete this recipe is not the one who is logged in");
+    }
+    } catch(error){
+    next(error);
+  }
+});
+
+
 module.exports = router;
 
 

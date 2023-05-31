@@ -5,22 +5,18 @@ const apikeys_recipes = process.env.APIKEYS_SPOON;
 const fs = require('fs');
 const axios = require("axios");
 
-async function markAsFavorite(user_id, recipe_id){
-    await DButils.execQuery(`insert into FavoriteRecipes values ('${user_id}',${recipe_id})`);
-}
-async function handleDeleteFavoriteRecipesOfUser(user_id,recipeId){
-    /**
-     * @TODO create a sql query that delete this from the DB
-     * const recipesList = await DButils.execQuery(`select recipe_id from FavoriteRecipes where user_id='${user_id}'`);
-     * return recipesList;
-     */ 
+/**
+ * @description this section is for the Delete requests of user 
+ * @method Delete 
+ */
+async function handleDeleteFavoriteRecipesOfUser(userId,recipeId){
+    await DButils.execQuery(`DELETE FROM family_recipes WHERE recipe_id='${recipeId}' AND user_id = '${userId}'`);
 }
 async function handleDeleteFamilyRecipeOfUser(user_id,recipeId){
-    /**
-     * @TODO create a sql query that delete this from the DB
-     * const recipesList = await DButils.execQuery(`select recipe_id from FavoriteRecipes where user_id='${user_id}'`);
-     * return recipesList;
-     */
+    //There'll be here 2 Delete Queries.
+    //One From family_recipes, Second from Recipes.
+    await DButils.execQuery(`DELETE FROM family_recipes WHERE recipe_id='${recipeId}'`);
+    await DButils.execQuery(`DELETE FROM recipes WHERE recipe_id = '${recipeId}'`);
 }
 async function handleDeleteImage(imageName) {
     fs.unlink(process.env.PATHIMAGES+imageName,function(err) {
@@ -30,8 +26,22 @@ async function handleDeleteImage(imageName) {
           return "Image Deleted successfully"
         }
     });
+}
+async function handleDeletePersonalRecipe(recipeId)
+{
+    //There'll be here 2 Delete Queries.
+    //One From personal_recipes, Second from Recipes.
+    await DButils.execQuery(`DELETE FROM personal_recipes WHERE recipe_id='${recipeId}'`);
+    await DButils.execQuery(`DELETE FROM ingredients WHERE recipe_id='${recipeId}'`);
+    await DButils.execQuery(`DELETE FROM ingredients WHERE recipe_id='${recipeId}'`);
+    await DButils.execQuery(`DELETE FROM recipes WHERE recipe_id = '${recipeId}'`);
 
 }
+async function handleDeleteLikedRecipe(recipeId,userId)
+{
+    await DButils.execQuery(`DELETE FROM liked_recipe WHERE recipe_id='${recipeId}' AND user_id = '${userId}'`);
+}
+
 
 /**
  * @description this section is for the Get requests of user 
@@ -141,6 +151,7 @@ async function handleCreateRecipe(name,Time,Likes,isVegan,isVeget,isGfree,portio
         `INSERT INTO recipes (name, Time, Likes, isVegan, isVeget, isGfree, Portions, Image, Intolerances, Cuisine)
          VALUES ('${name}', '${Time}', '${Likes}', '${isVegan}', '${isVeget}', '${isGfree}', '${portions}', '${image}', '${intolerances}', '${cuisine}')`
     );
+
     console.log("Recipe ID");
     console.log(recipe_info.insertId);
     return recipe_info.insertId;
@@ -159,8 +170,12 @@ async function handleAddRecipeToPersonal(currentUserId,recipeId)
     return queryExec.data;
 }
 
-async function markAsFavorite(user_id, recipe_id){
-    await DButils.execQuery(`insert into favorite_recipes values ('${user_id}',${recipe_id})`);
+async function markAsFavorite(user_id, recipe_id, source){
+    await DButils.execQuery(`insert into favorite_recipes (user_id, recipe_id, source) values ('${user_id}','${recipe_id}', '${source}')`);
+}
+async function handleAddLikedRecipe(userId,recipeId)
+{
+    await DButils.execQuery(`insert into liked_recipes (user_id, recipe_id) values ('${user_id}','${recipe_id}')`);
 }
 
 
@@ -169,13 +184,16 @@ let functions = {
     handleDeleteFavoriteRecipesOfUser,
     handleDeleteFamilyRecipeOfUser,
     handleAddRecipeToPersonal,
+    handleAddLikedRecipe,
     handleCreateRecipe,
     handleVisitRecipe,
     handleGetLastVisitedRecipes,
     handleDeleteImage,
     handleGetPersonalRecipesOfUser,
     handleGetFamilyRecipes,
-    handleGetSearchRecipes
+    handleGetSearchRecipes,
+    handleDeletePersonalRecipe,
+    handleDeleteLikedRecipe
 
 };
 exports.functions = functions
