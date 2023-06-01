@@ -53,7 +53,6 @@ router.post('/addFavorite', async (req,res,next) => {
     next(error);
   }
 });
-//TODO : ADD TO YAML
 router.post("/createRecipe/uploadimage", upload.single('image'),async (req, res, next) => {
   try{
     if (req.file){
@@ -98,7 +97,7 @@ router.post("/visitRecipe", async (req, res, next) => {
   }
 });
 
-router.post("/LikeRecipe", async (req, res, next) => {
+router.post("/likeRecipe", async (req, res, next) => {
   try {
     const userId = req.session.user_id;
     let {recipeId} =  req.body;
@@ -168,7 +167,6 @@ router.get("/visitedRecipes", async (req,res,next) => {
     next(error);
   }
 });
-//TODO : ADD TO YAML
 router.get("/getimage",async (req, res, next) => {
   try{
     let imageName = req.query.imageName;
@@ -202,7 +200,6 @@ router.get("/searchrecipe/:dish", async (req,res,next) => {
  * @description this section is for the DELETE requests of user 
  * @method Delete 
  */
- //TODO : ADD TO YAML
 router.delete("/deleteimage",async (req, res, next) => {
   try{
     let imageName = req.query.imageName;
@@ -271,6 +268,22 @@ router.delete('/removeLikedRecipe', async (req,res,next) => {
     }else{
       throw new Error("The user that is trying to delete this recipe is not the one who is logged in");
     }
+    } catch(error){
+    next(error);
+  }
+});
+
+
+/***
+ * @Just_For_Testing_Delete_If_I_die
+ * @TODO
+ */
+
+router.post('/test_recAPI', async (req,res,next) => {
+  try{
+    let recipeId = req.body.ids;
+    console.log(recipeId);
+    res.send(await user_utils.functions.handleGetRecipesFromAPI(recipeId));
     } catch(error){
     next(error);
   }

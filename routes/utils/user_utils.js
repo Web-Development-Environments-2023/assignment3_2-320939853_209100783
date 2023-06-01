@@ -4,7 +4,7 @@ require("dotenv").config();
 const apikeys_recipes = process.env.APIKEYS_SPOON;
 const fs = require('fs');
 const axios = require("axios");
-
+const recipes_utils = require("./recipes_utils.js")
 /**
  * @description this section is for the Delete requests of user 
  * @method Delete 
@@ -54,19 +54,23 @@ async function handleGetFamilyRecipes(currentUserId)
 {
     const recipeId_List = await DButils.execQuery(`select recipe_id from family_recipes where user_id='${currentUserId}'`);
     console.log(recipeId_List);
-    if (recipeId_List.length > 0)
-    {return await handleGetRecipesOfDB(recipeId_List);}
-    else
-    {return null;}
+    if (recipeId_List.length > 0){
+        return await handleGetRecipesOfDB(recipeId_List);
+    }
+    else{
+        return null;
+    }
 }
 async function handleGetPersonalRecipesOfUser(currentUserId)
 {
     const recipeId_List = await DButils.execQuery(`select recipe_id from personal_recipes where user_id='${currentUserId}'`);
     console.log(recipeId_List);
-    if (recipeId_List.length > 0)
-    {return await handleGetRecipesOfDB(recipeId_List);}
-    else
-    {return null;}
+    if (recipeId_List.length > 0){
+        return await handleGetRecipesOfDB(recipeId_List);
+    }
+    else{
+        return null;
+    }
 }
 //TODO:
 async function handleGetFavoriteRecipesOfUser(userId){
@@ -93,9 +97,19 @@ async function handleGetLastVisitedRecipes(userId, limit = 3) {
 }
  
 
-//TODO: EITAN 
-async function handleGetRecipesFromAPI(recipeId_ListFromAPI)
-{
+//TODO: Mark 
+/***
+ * @param as agreed the function will get array of strings ['1','2',....]
+ * @TseytlinMark Aprrove that you seen the comment 
+ */
+async function handleGetRecipesFromAPI(recipeId_ListFromAPI){
+    let recipiesStr = "";
+    recipeId_ListFromAPI.forEach(element =>{
+        recipiesStr += element+",";
+    });
+    let results = await recipes_utils.getArrayOfRecipes(recipiesStr);
+    let parsedRecipes = recipes_utils.extractInfoFromRecipe(results);
+    return parsedRecipes;
 }
 
 async function handleGetSearchRecipes( query, cuisine, diet, intolerance, number = 5 ) {
@@ -193,7 +207,8 @@ let functions = {
     handleGetFamilyRecipes,
     handleGetSearchRecipes,
     handleDeletePersonalRecipe,
-    handleDeleteLikedRecipe
+    handleDeleteLikedRecipe,
+    handleGetRecipesFromAPI,
 
 };
 exports.functions = functions

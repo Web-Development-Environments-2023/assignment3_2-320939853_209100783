@@ -1,5 +1,5 @@
 
-CREATE TABLE `first_schema`.`users` (
+CREATE TABLE IF NOT EXISTS `first_schema`.`users` (
   `username` varchar(45) NOT NULL,
   `firstname` varchar(45) NOT NULL,
   `lastname` varchar(45) NOT NULL,
@@ -12,7 +12,7 @@ CREATE TABLE `first_schema`.`users` (
 
 
 
-CREATE TABLE `first_schema`.`recipes` (
+CREATE TABLE IF NOT EXISTS `first_schema`.`recipes` (
   `recipe_id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(250) NOT NULL,
   `Time` INT NOT NULL,
@@ -27,7 +27,7 @@ CREATE TABLE `first_schema`.`recipes` (
   PRIMARY KEY (`recipe_id`)
 );
 
-CREATE TABLE `first_schema`.`favorite_recipes` (
+CREATE TABLE IF NOT EXISTS `first_schema`.`favorite_recipes` (
   `user_id` INT NOT NULL,
   `recipe_id` INT NOT NULL,
   `source` ENUM('Server', 'API') NOT NULL,
@@ -38,7 +38,7 @@ CREATE TABLE `first_schema`.`favorite_recipes` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
 
-CREATE TABLE `first_schema`.`family_recipes` (
+CREATE TABLE IF NOT EXISTS `first_schema`.`family_recipes` (
   `user_id`  INT NOT NULL,
   `recipe_id` int NOT NULL,
   PRIMARY KEY (`user_id`,`recipe_id`),
@@ -48,7 +48,7 @@ CREATE TABLE `first_schema`.`family_recipes` (
 );
 
 
-CREATE TABLE `first_schema`.`visited_recipes` (
+CREATE TABLE IF NOT EXISTS `first_schema`.`visited_recipes` (
   `user_id` INT NOT NULL,
   `recipe_id` int NOT NULL,
   `timestamp` timestamp(6) NOT NULL,
@@ -58,7 +58,7 @@ CREATE TABLE `first_schema`.`visited_recipes` (
 );
 
 
-CREATE TABLE `first_schema`.`personal_recipes` (
+CREATE TABLE IF NOT EXISTS `first_schema`.`personal_recipes` (
   `user_id` INT NOT NULL,
   `recipe_id` INT NOT NULL,
   PRIMARY KEY (`user_id`, `recipe_id`),
@@ -67,7 +67,7 @@ CREATE TABLE `first_schema`.`personal_recipes` (
 );
     
 
-CREATE TABLE `first_schema`.`liked_recipes` (
+CREATE TABLE IF NOT EXISTS `first_schema`.`liked_recipes` (
   `user_id` INT NOT NULL,
   `recipe_id` INT NOT NULL,
   PRIMARY KEY (`user_id`, `recipe_id`),
@@ -75,20 +75,22 @@ CREATE TABLE `first_schema`.`liked_recipes` (
   CONSTRAINT `recipeIDLiked` FOREIGN KEY (`recipe_id`) REFERENCES `first_schema`.`recipes` (`recipe_id`)
 );
 
-CREATE TABLE `first_schema`.`ingredients` (
+CREATE TABLE IF NOT EXISTS `first_schema`.`ingredients` (
   `recipe_id` INT NOT NULL,
   `ingredient_id` INT NOT NULL AUTO_INCREMENT,
   `ingredient` VARCHAR(150) NOT NULL,
   `amount` INT NOT NULL,
   `type` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`ingredient_id`, `ingredient`, `amount`),
   CONSTRAINT `recipeIDIng`
     FOREIGN KEY (`recipe_id`)
-    REFERENCES `first_schema`.`recipes` (`recipe_id`)
-  PRIMARY KEY (`ingredient_id`, `ingredient`, `amount`));
+    REFERENCES `first_schema`.`recipes` (`recipe_id`));
+
+
 
  
   
-CREATE TABLE `first_schema`.`steps_recipes` (
+CREATE TABLE IF NOT EXISTS  `first_schema`.`steps_recipes` (
 	`stepDesc` VARCHAR(255) NOT NULL,
     `recipe_id` INT NOT NULL,
     `stepNumber` INT NOT NULL,
@@ -96,6 +98,7 @@ CREATE TABLE `first_schema`.`steps_recipes` (
     CONSTRAINT `RecipeID_Steps` FOREIGN KEY (`recipe_id`) REFERENCES `first_schema`.`recipes` (`recipe_id`)
 ); 
   
+
 
 
 

@@ -43,9 +43,7 @@ router.post("/Register", async (req, res, next) => {
   }
 });
 
-/**
- * @todo check how the cookie is set
- */
+
 router.post("/Login", async (req, res, next) => {
   try {
     // check that username exists

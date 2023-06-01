@@ -66,7 +66,7 @@ paths:
         "401":
           description: Unauthorized
       security:
-      - bearerAuth: []
+      - cookieAuth: []
   /users/createRecipe:
     post:
       tags:
@@ -84,7 +84,7 @@ paths:
         "401":
           description: Unauthorized
       security:
-      - bearerAuth: []
+      - cookieAuth: []
   /users/addFavorite:
     post:
       tags:
@@ -102,8 +102,8 @@ paths:
         "401":
           description: Unauthorized
       security:
-      - bearerAuth: []
-  /users/LikeRecipe:
+      - cookieAuth: []
+  /users/likeRecipe:
     post:
       tags:
       - Auth-user
@@ -112,7 +112,12 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/recipeId'
+              type: object
+              properties:
+                recipeId:
+                  type: string
+                  example: "1234"
+
         required: true
       responses:
         "200":
@@ -120,7 +125,8 @@ paths:
         "401":
           description: Unauthorized
       security:
-      - bearerAuth: []
+      - cookieAuth: []
+
   /users/visitRecipe:
     post:
       tags:
@@ -138,7 +144,71 @@ paths:
         "401":
           description: Unauthorized
       security:
-      - bearerAuth: []
+      - cookieAuth: []
+  /users/createRecipe/uploadimage:
+    post:
+      tags:
+        - Auth-user
+      summary: get an image from the server
+      
+      responses:
+        "200":
+          content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    imagePath:
+                      type: string
+                      example: "path_to_image_at_the_server"
+        "401":
+          description: Unauthorized
+      security:
+      - cookieAuth: []
+
+  /users/getimage:
+    get:
+      tags:
+        - Auth-user
+      summary: get the image from the server
+      parameters:
+      - imageName: imageName
+        required: true
+        in: query
+      responses:
+        "200":
+          content:
+              image/png:
+                schema:
+                  type: string
+                  format: binary
+        "401":
+          description: Unauthorized
+      security:
+      - cookieAuth: []
+
+  /users/deleteimage:
+    delete:
+      tags:
+        - Auth-user-delete
+      summary: delete the image from the server
+      parameters:
+      - imageName: imageName
+        required: true
+        in: query
+      responses:
+        "200":
+          content:
+              application/json:
+                schema:
+                  type: string
+                  example: "Image Deleted successfully"
+                  format: name
+        "401":
+          description: Unauthorized
+      security:
+      - cookieAuth: []
+
   /users/favoriterecipes/:userId:
     get:
         tags:
@@ -227,29 +297,36 @@ paths:
       - Auth-user
       summary: Search Recipe Through API
       parameters:
-      - name: cuisine
+      - name: dish
         in: path
+        required: false
+        style: simple
+        explode: false
+        schema :
+          type: string
+      - name: cuisine
+        in: query
         required: false
         style: simple
         explode: false
         schema :
           type: string
       - name: diet
-        in: path
+        in: query
         required: false
         style: simple
         explode: false
         schema :
           type: string
       - name: intolerance
-        in: path
+        in: query
         required: false
         style: simple
         explode: false
         schema :
           type: string
       - name: number
-        in: path
+        in: query
         required: true
         style: simple
         explode: false
@@ -293,7 +370,7 @@ paths:
         "401":
           description: Unauthorized, request userId not matching current userId.
       security:
-      - bearerAuth: []
+      - cookieAuth: []
   /users/removePersonalRecipe:
     delete:
       tags:
@@ -323,7 +400,7 @@ paths:
         "401":
           description: Unauthorized, request userId not matching current userId.
       security:
-      - bearerAuth: []
+      - cookieAuth: []
   /users/removeFamilyRecipe:
     delete:
       tags:
@@ -353,7 +430,7 @@ paths:
         "401":
           description: Unauthorized, request userId not matching current userId.
       security:
-      - bearerAuth: []
+      - cookieAuth: []
   /users/removeLikedRecipe:
     delete:
       tags:
@@ -383,7 +460,7 @@ paths:
         "401":
           description: Unauthorized, request userId not matching current userId.
       security:
-      - bearerAuth: []
+      - cookieAuth: []
   /recipes/randomrecipes:
     get:
       tags:
@@ -711,7 +788,7 @@ components:
           example: 1540
 
   securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
+    cookieAuth:
+      type: userid
+      in: cookie
+      name: seassion
