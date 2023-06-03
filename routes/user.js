@@ -47,7 +47,8 @@ router.post('/addFavorite', async (req,res,next) => {
   try{
     const user_id = req.session.user_id;
     const recipe_id = req.body.recipeId;
-    await user_utils.markAsFavorite(user_id,recipe_id);
+    const recipe_src = req.body.source;
+    await user_utils.functions.markAsFavorite(user_id,recipe_id, recipe_src);
     res.status(200).send("The Recipe successfully saved as favorite");
     } catch(error){
     next(error);
@@ -115,11 +116,12 @@ router.post("/likeRecipe", async (req, res, next) => {
  * @description this section is for the GET requests of user 
  * @method Get 
  */
+//EXAMPLE OF GETTING FAVORITE RECIPES OF UserID : 1 
+//http://127.0.0.1:3000/users/favoriterecipes/1
  router.get('/favoriterecipes/:userId', async (req,res,next) => {
   try{
-    let requestedUserId = req.params.userId;
-    
-    let favRecipes = await user_utils.functions.handleFavoriteRecipesOfUser(requestedUserId);
+    let requestedUserId = req.params.userId;    
+    let favRecipes = await user_utils.functions.handleGetFavoriteRecipesOfUser(requestedUserId);
     res.status(200).send(favRecipes);
     } catch(error){
     next(error);
