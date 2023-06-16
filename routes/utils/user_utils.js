@@ -34,7 +34,7 @@ async function combineRecipeResults(API_Recipes, Server_Recipes)
     let Server = await handleGetRecipesOfDB(Server_Recipes);
     //TODO - MODIFY SERVER RECIPES STRUCTURE
     let API = await handleGetRecipesFromAPI(API_Recipes);
-    let combinedResult = { Server, API };
+    let combinedResult = {"Server":Server,"API":API};
     return combinedResult;
 }
 
