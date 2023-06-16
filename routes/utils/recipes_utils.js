@@ -92,8 +92,8 @@ function extractInfoFromRecipe(recipesArr){
             "isGfree": element.glutenFree,
             "portions": element.servings,
             "image": element.image, 
-            "ingredients": element.extendedIngredients,
-            "steps" : element.analyzedInstructions,
+            "ingredients": parseIngridFromAPI(element.extendedIngredients),
+            "steps" : parseStepsFromAPI(element.analyzedInstructions),
             "diets" : element.diets,
             "cuisine": element.cuisines,
             "dairyFree": element.dairyFree,
@@ -103,7 +103,33 @@ function extractInfoFromRecipe(recipesArr){
     return parsedRecipes;
 
 }
-
+function parseIngridFromAPI(items){
+    let parsedIngredient = [];
+    items.forEach(element =>{
+        let filteredIngredient = {
+            "recipe_id": element.id,
+            "ingredient_id": element.id,
+            "ingredient": element.name,
+            "amount": element.amount,
+            "type": element.unit,
+        };
+        parsedIngredient.push(filteredIngredient);
+    });
+    return parsedIngredient;
+}
+function parseStepsFromAPI(items){
+    let parsedSteps = [];
+    items.forEach((elem)=>{elem.steps.forEach((element) =>{
+            let parsedStep = {
+                "stepDesc": element.step,
+                "recipe_id": element.number,
+                "stepNumber": element.number,
+            };
+            parsedSteps.push(parsedStep);
+        });
+    });
+    return parsedSteps;
+}
 exports.extractInfoFromRecipe = extractInfoFromRecipe;
 exports.getRecipeDetails = getRecipeDetails;
 exports.getArrayOfRecipes = getArrayOfRecipes;
