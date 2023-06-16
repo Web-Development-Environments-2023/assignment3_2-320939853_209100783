@@ -123,8 +123,7 @@ router.post("/likeRecipe", async (req, res, next) => {
     let requestedUserId = req.params.userId;
     
     let favRecipes = await user_utils.functions.handleGetFavoriteRecipesOfUser(requestedUserId);
-    let parsed = recipe_utils.extractInfoFromRecipe(favRecipes)
-    res.status(200).send(parsed);
+    res.status(200).send(favRecipes);
     } catch(error){
     next(error);
   }

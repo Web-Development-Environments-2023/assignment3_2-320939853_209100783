@@ -32,10 +32,16 @@ async function combineRecipeResults(API_Recipes, Server_Recipes)
     API_Recipes = API_Recipes.map(recipe => recipe.toString());
     //MECHANISM OF RETURN RECIPES OBJECTS
     let Server = await handleGetRecipesOfDB(Server_Recipes);
+    //TODO - MODIFY SERVER RECIPES STRUCTURE
     let API = await handleGetRecipesFromAPI(API_Recipes);
     let combinedResult = { Server, API };
     return combinedResult;
 }
+
+
+
+
+
 /**
  * @description this section is for the Delete requests of user 
  * @method Delete 
@@ -173,13 +179,15 @@ async function handleGetRecipesOfDB(recipeId_List)
         await console.log(RecipeRow);
         //Query Returns From DB as Array
         //We Select Only One Recipe At Time, So It is necessary to reach index [0]
-        RecipeRow = RecipeRow[0];
-        recipe = {recipe_id:RecipeRow.recipe_id, name:RecipeRow.name,Time:RecipeRow.Time,Likes:RecipeRow.Likes, isVegan:RecipeRow.isVegan, isVeget:RecipeRow.isVeget, isGfree:RecipeRow.isGfree, portions:RecipeRow.portions, Image:RecipeRow.Image, intolerances:RecipeRow.intolerances, Cuisine:RecipeRow.cuisine}
-        console.log(recipe);
+        RecipeRow = RecipeRow[0];       
         let ingredient = await DButils.execQuery(`select * from ingredients where recipe_id='${recipeId}'`);
         let steps = await DButils.execQuery(`select * from steps_recipes where recipe_id='${recipeId}'`);
-        let recipeJson = {recipe:recipe,ingredients:ingredient,steps:steps}
-        recipes.push(recipeJson);
+       
+        let recipe = {id:RecipeRow.recipe_id, name:RecipeRow.name,Time:RecipeRow.Time,Likes:RecipeRow.Likes, isVegan:RecipeRow.isVegan, isVeget:RecipeRow.isVeget, isGfree:RecipeRow.isGfree, portions:RecipeRow.portions, image:RecipeRow.Image,
+            ingredients:ingredient,steps:steps, intolerances:RecipeRow.intolerances, Cuisine:RecipeRow.cuisine}
+       
+        // let recipeJson = {recipe:recipe,ingredients:ingredient,steps:steps}
+        recipes.push(recipe);
     }
     return recipes;
 }
