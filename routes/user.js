@@ -32,7 +32,7 @@ router.use(async function (req, res, next) {
       }
     }).catch(err => next(err));
   } else {
-    console.log("erorr is hereeee");
+    console.log("erorr is auth in users.js");
     res.sendStatus(401);
   }
 });
@@ -119,8 +119,9 @@ router.post("/likeRecipe", async (req, res, next) => {
   try{
     let requestedUserId = req.params.userId;
     
-    let favRecipes = await user_utils.functions.handleFavoriteRecipesOfUser(requestedUserId);
-    res.status(200).send(favRecipes);
+    let favRecipes = await user_utils.functions.handleGetFavoriteRecipesOfUser(requestedUserId);
+    let parsed = recipe_utils.extractInfoFromRecipe(favRecipes)
+    res.status(200).send(parsed);
     } catch(error){
     next(error);
   }
@@ -159,7 +160,8 @@ router.get("/visitedRecipes", async (req,res,next) => {
     const userId = req.session.user_id;
     let limit = req.query.limit;
     let visitedRecipes = await user_utils.handleGetLastVisitedRecipes(userId,limit);
-    res.status(200).send({message:"Retrieved Last 3 Visited Recipes ", success: true,"visitedRecipes":visitedRecipes});
+    let parsed = recipe_utils.extractInfoFromRecipe(visitedRecipes)
+    res.status(200).send({message:"Retrieved Last 3 Visited Recipes ", success: true,"visitedRecipes":parsed});
     console.log(visitedRecipes);
   }
   catch(error)

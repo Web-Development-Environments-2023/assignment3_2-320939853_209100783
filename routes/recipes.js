@@ -33,7 +33,8 @@ router.get("/randomrecipes", async (req, res, next) => {
   try {
     let number = req.query.number;
     let recipes = await recipes_utils.getRandomRecipes(number);
-    res.send(recipes);
+    let parsed = recipes_utils.extractInfoFromRecipe(recipes)
+    res.send(parsed);
   } catch (error) {
     next(error);
   }

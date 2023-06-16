@@ -38,7 +38,7 @@ async function handleGetRandomRecipes(number_of_recipes) {
 }
 
 async function handlegetArrayOfRecipes(recipesIds) {
-    return await axios.get(`${api_domain}/informationBulk`, {
+    let ans =  await axios.get(`${api_domain}/informationBulk`, {
         headers: {
             "x-api-key":apikeys_recipes
 
@@ -47,6 +47,7 @@ async function handlegetArrayOfRecipes(recipesIds) {
             "ids":recipesIds
         }
     });
+    return ans
 }
 
 async function getRandomRecipes(number_of_recipes) {

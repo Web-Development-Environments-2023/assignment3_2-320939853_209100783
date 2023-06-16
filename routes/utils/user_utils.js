@@ -209,6 +209,7 @@ let functions = {
     handleDeletePersonalRecipe,
     handleDeleteLikedRecipe,
     handleGetRecipesFromAPI,
+    handleGetFavoriteRecipesOfUser,
 
 };
 exports.functions = functions
