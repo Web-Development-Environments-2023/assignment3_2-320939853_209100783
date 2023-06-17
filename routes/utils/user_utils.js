@@ -47,7 +47,7 @@ async function combineRecipeResults(API_Recipes, Server_Recipes)
  * @method Delete 
  */
 async function handleDeleteFavoriteRecipesOfUser(userId,recipeId){
-    await DButils.execQuery(`DELETE FROM family_recipes WHERE recipe_id='${recipeId}' AND user_id = '${userId}'`);
+    await DButils.execQuery(`DELETE FROM favorite_recipes WHERE recipe_id='${recipeId}' AND user_id = '${userId}'`);
 }
 async function handleDeleteFamilyRecipeOfUser(user_id,recipeId){
     //There'll be here 2 Delete Queries.
