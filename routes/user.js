@@ -180,23 +180,23 @@ router.get("/getimage",async (req, res, next) => {
 
 });
 
-router.get("/searchrecipe/:dish", async (req,res,next) => {
-  try{
-    let query = req.params.dish;
-    let { cuisine, diet, intolerance, number } = req.query;
-    let recipesStr = ""
-    let recpiesFromSearch = await user_utils.functions.handleGetSearchRecipes(query, cuisine, diet, intolerance, number);
-    recpiesFromSearch.forEach(element =>{
-       recipesStr += element.id+",";
-    });
-    console.log(recipesStr);
-    let ans = await recipe_utils.getArrayOfRecipes(recipesStr);
-    let parsed = recipe_utils.extractInfoFromRecipe(ans);
-    res.status(200).send(parsed);
-    } catch(error){
-    next(error);
-  }
-});
+// router.get("/searchrecipe/:dish", async (req,res,next) => {
+//   try{
+//     let query = req.params.dish;
+//     let { cuisine, diet, intolerance, number } = req.query;
+//     let recipesStr = ""
+//     let recpiesFromSearch = await user_utils.functions.handleGetSearchRecipes(query, cuisine, diet, intolerance, number);
+//     recpiesFromSearch.forEach(element =>{
+//        recipesStr += element.id+",";
+//     });
+//     console.log(recipesStr);
+//     let ans = await recipe_utils.getArrayOfRecipes(recipesStr);
+//     let parsed = recipe_utils.extractInfoFromRecipe(ans);
+//     res.status(200).send(parsed);
+//     } catch(error){
+//     next(error);
+//   }
+// });
 
 
 /**
