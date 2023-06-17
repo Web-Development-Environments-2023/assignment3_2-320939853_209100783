@@ -3,6 +3,7 @@ const api_domain = "https://api.spoonacular.com/recipes";
 require("dotenv").config();
 const apikeys_recipes = process.env.APIKEYS_SPOON;
 const DButils = require("./DButils");
+const users = require("./user_utils")
 
 
 
@@ -14,7 +15,7 @@ const DButils = require("./DButils");
 
 async function handlegetRecipeDetails(recipe_id,nutritional=false) {
     //Need To Implement Here Logic of 
-    return await axios.get(`${api_domain}/${recipe_id}/information`, {
+    let recpieBeforeParse = await axios.get(`${api_domain}/${recipe_id}/information`, {
         headers: {
             "x-api-key":apikeys_recipes
         },
@@ -22,6 +23,10 @@ async function handlegetRecipeDetails(recipe_id,nutritional=false) {
             includeNutrition: nutritional,
         }
     });
+    console.log(recpieBeforeParse.data);
+    let afterParse = extractInfoFromRecipe([recpieBeforeParse.data]);
+    return afterParse;
+    
 }
 
 // this func is sending a http request to the domain and return 3 random recipes
@@ -60,19 +65,15 @@ async function getRandomRecipes(number_of_recipes) {
 
 async function getRecipeDetails(recipe_id,nutritional=false) {
     let recipe_info = await handlegetRecipeDetails(recipe_id,nutritional);
-    let { id, title, readyInMinutes, image, aggregateLikes, vegan, vegetarian, glutenFree } = recipe_info.data;
-
-    return {
-        id: id,
-        title: title,
-        readyInMinutes: readyInMinutes,
-        image: image,
-        popularity: aggregateLikes,
-        vegan: vegan,
-        vegetarian: vegetarian,
-        glutenFree: glutenFree,
-    }
+    console.log("AAAAAAAAAAAAAAAAAAAAAAA");
+    return recipe_info[0];
 }
+
+async function getRecipeDetailsDB(recipe_id) {
+    let recipe_info = await users.functions.handleGetRecipesOfDB([recipe_id]);
+    return recipe_info[0];
+}
+
 
 async function getArrayOfRecipes(recipesIds) {
     let recipe_info = await handlegetArrayOfRecipes(recipesIds);
@@ -134,3 +135,4 @@ exports.extractInfoFromRecipe = extractInfoFromRecipe;
 exports.getRecipeDetails = getRecipeDetails;
 exports.getArrayOfRecipes = getArrayOfRecipes;
 exports.getRandomRecipes = getRandomRecipes;
+exports.getRecipeDetailsDB = getRecipeDetailsDB;

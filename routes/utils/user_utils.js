@@ -123,7 +123,8 @@ async function handleGetPersonalRecipesOfUser(currentUserId)
 async function handleGetFavoriteRecipesOfUser(userId){
     let rows = await DButils.execQuery(`select recipe_id, source from favorite_recipes where user_id='${userId}'`);
     let [Server_Recipes, API_recipes] = DistinctRecipes(rows);
-    return combineRecipeResults(API_recipes, Server_Recipes);
+    return {"Server":Server_Recipes,"API":API_recipes};
+    // return combineRecipeResults(API_recipes, Server_Recipes);
 }
 async function handleGetLikedRecipesOfUser(userId){
     const recipesList = await DButils.execQuery(`select recipe_id from liked_recipes where user_id='${userId}'`);
@@ -172,6 +173,8 @@ async function handleGetSearchRecipes( query, cuisine, diet, intolerance, number
 async function handleGetRecipesOfDB(recipeId_List)
 {
     recipes = [];
+    console.log("Recipe_IDLIST");
+    console.log(recipeId_List);
     for(let i = 0; i < recipeId_List.length; i++)
     {
         recipeId = recipeId_List[i];
@@ -179,7 +182,9 @@ async function handleGetRecipesOfDB(recipeId_List)
         await console.log(RecipeRow);
         //Query Returns From DB as Array
         //We Select Only One Recipe At Time, So It is necessary to reach index [0]
-        RecipeRow = RecipeRow[0];       
+        RecipeRow = RecipeRow[0];
+        console.log("AAAAAA");       
+        console.log(RecipeRow);
         let ingredient = await DButils.execQuery(`select * from ingredients where recipe_id='${recipeId}'`);
         let steps = await DButils.execQuery(`select * from steps_recipes where recipe_id='${recipeId}'`);
        
@@ -252,6 +257,7 @@ let functions = {
     handleDeleteLikedRecipe,
     handleGetRecipesFromAPI,
     handleGetFavoriteRecipesOfUser,
-    handleGetLikedRecipesOfUser
+    handleGetLikedRecipesOfUser,
+    handleGetRecipesOfDB,
 };
 exports.functions = functions
