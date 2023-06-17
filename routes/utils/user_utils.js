@@ -172,19 +172,14 @@ async function handleGetSearchRecipes( query, cuisine, diet, intolerance, number
  */
 async function handleGetRecipesOfDB(recipeId_List)
 {
-    recipes = [];
-    console.log("Recipe_IDLIST");
-    console.log(recipeId_List);
+    let recipes = [];
     for(let i = 0; i < recipeId_List.length; i++)
     {
-        recipeId = recipeId_List[i];
+        let recipeId = recipeId_List[i];
         let RecipeRow = await DButils.execQuery(`select * from recipes where recipe_id='${recipeId}'`);
-        await console.log(RecipeRow);
         //Query Returns From DB as Array
         //We Select Only One Recipe At Time, So It is necessary to reach index [0]
         RecipeRow = RecipeRow[0];
-        console.log("AAAAAA");       
-        console.log(RecipeRow);
         let ingredient = await DButils.execQuery(`select * from ingredients where recipe_id='${recipeId}'`);
         let steps = await DButils.execQuery(`select * from steps_recipes where recipe_id='${recipeId}'`);
        
@@ -211,8 +206,7 @@ async function handleCreateRecipe(name,Time,Likes,isVegan,isVeget,isGfree,portio
          VALUES ('${name}', '${Time}', '${Likes}', '${isVegan}', '${isVeget}', '${isGfree}', '${portions}', '${image}', '${intolerances}', '${cuisine}')`
     );
 
-    console.log("Recipe ID");
-    console.log(recipe_info.insertId);
+
     return recipe_info.insertId;
 }
 async function handleVisitRecipe(userId, recipeId, source) {
@@ -230,7 +224,6 @@ async function handleAddRecipeToPersonal(currentUserId,recipeId)
 }
 
 async function markAsFavorite(user_id, recipe_id, source){
-    console.log(recipe_id);
     await DButils.execQuery(`insert into favorite_recipes (user_id, recipe_id, source) values ('${user_id}','${recipe_id}', '${source}')`);
 }
 async function handleAddLikedRecipe(userId,recipeId)

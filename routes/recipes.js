@@ -64,44 +64,11 @@ router.post("/getArrayOfRecipes", async (req, res, next) => {
   try {
     let recipeIds =  req.body.recipeIds;
     let recipe = await recipes_utils.getArrayOfRecipes(recipeIds);
-    console.log(typeof(recipe));
     res.send(recipe);
   } catch (error) {
     next(error);
   }
 });
-
-/**
- * @todo Write this endpoint in the yaml file 
- */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//It'll print p itself
-router.get("/Hello", (req, res) =>{ 
-  let itzik = req.query.p;
-  // console.log(typeof(itzik));
-  res.send(`Itzik : ${itzik}`);
-})
-//It'll print whats before p
-router.get("/Bye/:p", (req, res) => {
-let itzik = req.params.p;
-res.send(`Itzik : ${itzik}`);
-})
-
 
 
 

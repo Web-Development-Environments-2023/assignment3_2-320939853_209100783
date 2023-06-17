@@ -112,6 +112,12 @@ VALUES ('root', 'John', 'Doe', 'USA', 'root', 'root@example.com');
 INSERT INTO `first_schema`.`users` (`username`, `firstname`, `lastname`, `country`, `password`, `email`) 
 VALUES ('sec', 'Mike', 'Johnson', 'UK', 'sec', 'sec@example.com');
 
+INSERT INTO `first_schema`.`favorite_recipes` (`user_id`, `recipe_id`, `source`) 
+VALUES (1, 2, 'Server');
+
+INSERT INTO `first_schema`.`favorite_recipes` (`user_id`, `recipe_id`, `source`) 
+VALUES (1, 1095886, 'API');
+
 better Inserting Them through POSTMAN Login Post Request.
 
 #### USERS #####

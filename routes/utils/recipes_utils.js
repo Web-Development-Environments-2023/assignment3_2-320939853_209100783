@@ -23,7 +23,6 @@ async function handlegetRecipeDetails(recipe_id,nutritional=false) {
             includeNutrition: nutritional,
         }
     });
-    console.log(recpieBeforeParse.data);
     let afterParse = extractInfoFromRecipe([recpieBeforeParse.data]);
     return afterParse;
     
@@ -65,7 +64,6 @@ async function getRandomRecipes(number_of_recipes) {
 
 async function getRecipeDetails(recipe_id,nutritional=false) {
     let recipe_info = await handlegetRecipeDetails(recipe_id,nutritional);
-    console.log("AAAAAAAAAAAAAAAAAAAAAAA");
     return recipe_info[0];
 }
 

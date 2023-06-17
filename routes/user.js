@@ -75,7 +75,6 @@ router.post("/createRecipe",async (req, res, next) => {
     let createdRecipeID = await user_utils.functions.handleCreateRecipe(name,Time,Likes,isVegan,isVeget,isGfree,portions,image,intolerances,cuisine);
     //HERE'S LOGIC OF ADDING RECIPE TO PERSONAL
     await user_utils.functions.handleAddRecipeToPersonal(userId, createdRecipeID);
-    console.log("YOUR MOM ");
     //HERE'S LOGIC OF ADDING INGREDIENTS TO RECIPE_INGREDIENT IN DB
     if(ingredients)
     {await ingredients_utils.handleCreateIngredient(ingredients,createdRecipeID);}
@@ -164,7 +163,7 @@ router.get("/visitedRecipes", async (req,res,next) => {
     let visitedRecipes = await user_utils.handleGetLastVisitedRecipes(userId,limit);
     let parsed = recipe_utils.extractInfoFromRecipe(visitedRecipes)
     res.status(200).send({message:"Retrieved Last 3 Visited Recipes ", success: true,"visitedRecipes":parsed});
-    console.log(visitedRecipes);
+    console.log("Handel visited Recipes");
   }
   catch(error)
   {
@@ -216,11 +215,11 @@ router.delete("/deleteimage",async (req, res, next) => {
 
 router.delete('/removeFavoriteRecipe', async (req,res,next) => {
   try{
-    let userId = req.body.userId;
+    let userId = req.body.user_id;
     let recipeId = req.body.recipeId;
     const sessionUser_id = req.session.user_id;
-    if (userId === sessionUser_id){
-      await user_utils.functions.handleDeleteFavoriteRecipesOfUser(userId,recipeId);
+    if (userId == sessionUser_id){
+      let favRecipes = await user_utils.functions.handleDeleteFavoriteRecipesOfUser(userId,recipeId);
       res.status(200).send(favRecipes);
     }else{
       throw new Error("The user that is trying to delete this recipe is not the one who is logged in");
@@ -278,20 +277,7 @@ router.delete('/removeLikedRecipe', async (req,res,next) => {
 });
 
 
-/***
- * @Just_For_Testing_Delete_If_I_die
- * @TODO
- */
 
-router.post('/test_recAPI', async (req,res,next) => {
-  try{
-    let recipeId = req.body.ids;
-    console.log(recipeId);
-    res.send(await user_utils.functions.handleGetRecipesFromAPI(recipeId));
-    } catch(error){
-    next(error);
-  }
-});
 
 
 module.exports = router;
