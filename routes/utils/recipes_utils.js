@@ -81,7 +81,7 @@ async function getArrayOfRecipes(recipesIds) {
 
 function extractInfoFromRecipe(recipesArr){
     let parsedRecipes = [];
-    recipesArr.forEach(element =>{
+    recipesArr.forEach((element) =>{
         let filteredRecpie = {
             "id": element.id,
             "name": element.title,
@@ -98,7 +98,8 @@ function extractInfoFromRecipe(recipesArr){
             "dairyFree": element.dairyFree,
         };
         parsedRecipes.push(filteredRecpie);
-    });
+    }
+    );
     return parsedRecipes;
 
 }

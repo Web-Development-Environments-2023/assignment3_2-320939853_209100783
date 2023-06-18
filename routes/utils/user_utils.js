@@ -29,11 +29,11 @@ function DistinctRecipes(rows)
 async function combineRecipeResults(API_Recipes, Server_Recipes)
 {
     //Modifying API_Recipes to match handleGetRecipesFromAPI params.
-    API_Recipes = API_Recipes.map(recipe => recipe.toString());
+    let APi_r = API_Recipes.map(recipe => recipe.toString());
     //MECHANISM OF RETURN RECIPES OBJECTS
     let Server = await handleGetRecipesOfDB(Server_Recipes);
     //TODO - MODIFY SERVER RECIPES STRUCTURE
-    let API = await handleGetRecipesFromAPI(API_Recipes);
+    let API = await handleGetRecipesFromAPI(APi_r);
     let combinedResult = {"Server":Server,"API":API};
     return combinedResult;
 }
@@ -133,7 +133,7 @@ async function handleGetLikedRecipesOfUser(userId){
 }
 async function handleGetLastVisitedRecipes(userId, limit = 3) {
     let query = `SELECT recipe_id FROM visited_recipes
-                 WHERE username = '${userId}'
+                 WHERE  user_id = '${userId}'
                  ORDER BY timestamp DESC
                  LIMIT ${limit}`;
     let recipesList = await DButils.execQuery(query);
@@ -142,7 +142,7 @@ async function handleGetLastVisitedRecipes(userId, limit = 3) {
 }
 async function handleGetRecipesFromAPI(recipeId_ListFromAPI){
     let recipiesStr = "";
-    recipeId_ListFromAPI.forEach(element =>{
+    recipeId_ListFromAPI.forEach((element) =>{
         recipiesStr += element+",";
     });
     let results = await recipes_utils.getArrayOfRecipes(recipiesStr);

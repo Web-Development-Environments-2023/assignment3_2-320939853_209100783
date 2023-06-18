@@ -160,9 +160,8 @@ router.get("/visitedRecipes", async (req,res,next) => {
     //anyway, for testing
     const userId = req.session.user_id;
     let limit = req.query.limit;
-    let visitedRecipes = await user_utils.handleGetLastVisitedRecipes(userId,limit);
-    let parsed = recipe_utils.extractInfoFromRecipe(visitedRecipes)
-    res.status(200).send({message:"Retrieved Last 3 Visited Recipes ", success: true,"visitedRecipes":parsed});
+    let visitedRecipes = await user_utils.functions.handleGetLastVisitedRecipes(userId,limit);
+    res.status(200).send({message:"Retrieved Last 3 Visited Recipes ", success: true,"visitedRecipes":visitedRecipes});
     console.log("Handel visited Recipes");
   }
   catch(error)
