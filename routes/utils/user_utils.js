@@ -92,19 +92,35 @@ async function handleDeleteLikedRecipe(recipeId,userId)
 
 
 
-async function handleGetFamilyRecipes(currentUserId)
+async function handleGetFamilyRecipes()
 {
-    const rows = await DButils.execQuery(`select recipe_id from family_recipes where user_id='${currentUserId}'`);
-    let recipeId_List = []
-    rows.forEach((row) => {
-        recipeId_List.push(row.recipe_id);
-    });
-    if (recipeId_List.length > 0){
-        return await handleGetRecipesOfDB(recipeId_List);
+    const rows = await DButils.execQuery(`select * from family_recipes`);
+    console.log(rows);
+    let recipes = [];
+    if (rows.length > 0)
+    {
+        for (const row of rows) {
+            let recipe = await handleGetRecipesOfDB([row.recipe_id]);
+            recipe = recipe[0];
+            recipe.creator = row.creator;
+            recipe.When = row.When;
+            recipe.source = row.source;
+            recipes.push(recipe);
+        }
+        return recipes;
     }
-    else{
-        return null;
-    }
+    else{return null;}
+
+    // });
+    // recipes = []
+    // if (recipeId_List.length > 0){
+    //     recipes = await handleGetRecipesOfDB(recipeId_List);
+    //     recipes.forEach((recipe)=> {
+    //     });
+    // }
+    // else{
+    //     return null;
+    // }
 }
 async function handleGetPersonalRecipesOfUser(currentUserId)
 {

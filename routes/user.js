@@ -146,8 +146,7 @@ router.get('/personalRecipes', async (req,res,next) => {
  */
 router.get("/familyRecipes", async (req,res,next) => {
   try{
-    const userId = req.session.user_id;
-    recipes = await user_utils.functions.handleGetFamilyRecipes(userId);
+    let recipes = await user_utils.functions.handleGetFamilyRecipes();
     res.status(200).send({message:"Family Recipes Retrieved ! ", data:recipes});
     } catch(error){
     next(error);
