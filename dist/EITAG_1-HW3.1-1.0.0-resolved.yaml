@@ -1,0 +1,794 @@
+---
+openapi: 3.0.0
+info:
+  title: Best API ever
+  description: This is a API
+  contact:
+    email: you@your-company.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+servers:
+- url: http://127.0.0.1:3000/
+  description: SwaggerHub API Auto Mocking
+tags:
+- name: Auth-user
+  description: Auth Users only calls
+- name: Auth-user-delete
+  description: Auth Users only calls
+- name: Un-Auth-User
+  description: only Un-Authenticated users
+paths:
+  /Register:
+    post:
+      tags:
+      - Un-Auth-User
+      summary: register a user
+      description: providing all the details of the user register
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        "200":
+          description: created
+  /Login:
+    post:
+      tags:
+      - Un-Auth-User
+      summary: Login a user
+      description: providing all the details of the user Login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCreds'
+        required: true
+      responses:
+        "200":
+          description: Logged In
+  /Logout:
+    post:
+      tags:
+      - Auth-user
+      summary: logout a user that has valid token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/logout_body'
+        required: true
+      responses:
+        "200":
+          description: added successfully
+        "401":
+          description: Unauthorized
+      security:
+      - cookieAuth: []
+  /users/createRecipe:
+    post:
+      tags:
+      - Auth-user
+      summary: Adds Recipe to personal_recipes of user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Recipe'
+        required: true
+      responses:
+        "200":
+          description: Recipe added successfully
+        "401":
+          description: Unauthorized
+      security:
+      - cookieAuth: []
+  /users/addFavorite:
+    post:
+      tags:
+      - Auth-user
+      summary: Adds Recipe to favorite_recipes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/recipeId_userId'
+        required: true
+      responses:
+        "200":
+          description: Chosen Recipe Added Successfully to personal_recipes
+        "401":
+          description: Unauthorized
+      security:
+      - cookieAuth: []
+  /users/likeRecipe:
+    post:
+      tags:
+      - Auth-user
+      summary: Adds Recipe to user's Liked Recipes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                recipeId:
+                  type: string
+                  example: "1234"
+
+        required: true
+      responses:
+        "200":
+          description: Chosen Recipe Added Successfully to user's Liked Recipes
+        "401":
+          description: Unauthorized
+      security:
+      - cookieAuth: []
+
+  /users/visitRecipe:
+    post:
+      tags:
+        - Auth-user
+      summary: Add Visited Recipe to visited_recipes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/recipeId_userId'
+        required: true
+      responses:
+        "200":
+          description: added successfully
+        "401":
+          description: Unauthorized
+      security:
+      - cookieAuth: []
+  /users/createRecipe/uploadimage:
+    post:
+      tags:
+        - Auth-user
+      summary: get an image from the server
+      
+      responses:
+        "200":
+          content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    imagePath:
+                      type: string
+                      example: "path_to_image_at_the_server"
+        "401":
+          description: Unauthorized
+      security:
+      - cookieAuth: []
+
+  /users/getimage:
+    get:
+      tags:
+        - Auth-user
+      summary: get the image from the server
+      parameters:
+      - imageName: imageName
+        required: true
+        in: query
+      responses:
+        "200":
+          content:
+              image/png:
+                schema:
+                  type: string
+                  format: binary
+        "401":
+          description: Unauthorized
+      security:
+      - cookieAuth: []
+
+  /users/deleteimage:
+    delete:
+      tags:
+        - Auth-user-delete
+      summary: delete the image from the server
+      parameters:
+      - imageName: imageName
+        required: true
+        in: query
+      responses:
+        "200":
+          content:
+              application/json:
+                schema:
+                  type: string
+                  example: "Image Deleted successfully"
+                  format: name
+        "401":
+          description: Unauthorized
+      security:
+      - cookieAuth: []
+
+  /users/favoriterecipes/:userId:
+    get:
+        tags:
+        - Auth-user
+        summary: Get user's Favorite Recipes
+        parameters:
+        - name: userId
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: int
+        responses:
+          "200":
+            description: User's Favorite Recipes Retrieved Successfully
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Recipe'
+  /users/personalRecipes:
+    get:
+        tags:
+        - Auth-user
+        summary: Get user's Personal Recipes
+        requestBody:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/userId'
+          required: true
+        responses:
+          "200":
+            description: User's Personal Recipes Retrieved Successfully
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Recipe'
+  /users/familyRecipes:
+   get:
+        tags:
+        - Auth-user
+        summary: Get user's Family Recipes
+        requestBody:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/userId'
+          required: true
+        responses:
+          "200":
+            description: User's Family Recipes Retrieved Successfully
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Recipe'
+  /users/visitedRecipes:
+    get:
+        tags:
+        - Auth-user
+        summary: Get user's Visited Recipes
+        requestBody:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/userId'
+          required: true
+        responses:
+          "200":
+            description: User's Visited Recipes Retrieved Successfully
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Recipe'
+  /users/searchrecipe/:dish:
+    get:
+      tags:
+      - Auth-user
+      summary: Search Recipe Through API
+      parameters:
+      - name: dish
+        in: path
+        required: false
+        style: simple
+        explode: false
+        schema :
+          type: string
+      - name: cuisine
+        in: query
+        required: false
+        style: simple
+        explode: false
+        schema :
+          type: string
+      - name: diet
+        in: query
+        required: false
+        style: simple
+        explode: false
+        schema :
+          type: string
+      - name: intolerance
+        in: query
+        required: false
+        style: simple
+        explode: false
+        schema :
+          type: string
+      - name: number
+        in: query
+        required: true
+        style: simple
+        explode: false
+        schema :
+          type: number
+      responses:
+        "200":
+          description: Search Recipes Succeeded, Here's an array of recipes.
+          content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Recipe'
+  /users/removeFavoriteRecipe:
+    delete:
+      tags:
+      - Auth-user-delete
+      summary: Delete Recipe from user's favorites
+      description: Recipe removed from Favs
+      parameters:
+      - name: RecipeID
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: int
+          example: 1540
+      - name: userId
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: id
+          example: 14
+      responses:
+        "200":
+          description: Recipe Has Been deleted Successfully from user's Favorites
+        "401":
+          description: Unauthorized, request userId not matching current userId.
+      security:
+      - cookieAuth: []
+  /users/removePersonalRecipe:
+    delete:
+      tags:
+      - Auth-user-delete
+      summary: Delete Recipe from User's Personal and Entire DB
+      description: Recipe Removed from DB
+      parameters:
+      - name: RecipeID
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: int
+          example: 1540
+      - name: userId
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: id
+          example: 14
+      responses:
+        "200":
+          description: Recipe Has Been deleted Successfully from DB
+        "401":
+          description: Unauthorized, request userId not matching current userId.
+      security:
+      - cookieAuth: []
+  /users/removeFamilyRecipe:
+    delete:
+      tags:
+      - Auth-user-delete
+      summary: Delete Recipe from User's Family DB
+      description: Recipe Removed from DB
+      parameters:
+      - name: RecipeID
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: int
+          example: 1540
+      - name: userId
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: id
+          example: 14
+      responses:
+        "200":
+          description: Family Recipe Has Been deleted Successfully from DB
+        "401":
+          description: Unauthorized, request userId not matching current userId.
+      security:
+      - cookieAuth: []
+  /users/removeLikedRecipe:
+    delete:
+      tags:
+      - Auth-user-delete
+      summary: Delete Recipe from User's Liked Recipes
+      description: Recipe Removed from Liked_Recipes
+      parameters:
+      - name: RecipeID
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: int
+          example: 1540
+      - name: userId
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: id
+          example: 14
+      responses:
+        "200":
+          description: Family Recipe Has Been deleted Successfully from DB
+        "401":
+          description: Unauthorized, request userId not matching current userId.
+      security:
+      - cookieAuth: []
+  /recipes/randomrecipes:
+    get:
+      tags:
+      - recipes
+      parameters:
+        - name: number
+          in: query
+          required: true
+          style: number
+          schema:
+            type: number
+            example: 3
+      summary: 'Return Array of N Random Recipes'
+      
+      responses:
+        "200":
+          description: 3 Random Recipes from the system
+          content:
+            application/json:
+              schema:
+                maxItems: 3
+                minItems: 3
+                type: array
+                items:
+                  $ref: '#/components/schemas/Recipe'
+  /recipes/getrecipe/:recipeID:
+    get:
+      tags:
+      - recipes
+      summary: 'get recipe by id '
+      parameters:
+      - name: recipeID
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Recipe Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Recipe'
+  /recipes/getArrayOfRecipes:
+    post:
+      tags:
+      - recipes
+      summary: 'get array of recipe by id '
+      description: ' use this to retrive the user favs or family or private'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/getArrayOfRecipes_body'
+        required: true
+      responses:
+        "200":
+          description: Recipe Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Recipe'
+components:
+  schemas:
+    UserCreds:
+      required:
+      - password
+      - username
+      type: object
+      properties:
+        username:
+          type: string
+          example: Mark
+        password:
+          type: string
+          format: password
+    User:
+      required:
+      - country
+      - email
+      - firstname
+      - lastname
+      - password
+      - username
+      - country
+      type: object
+      properties:
+        username:
+          maxLength: 8
+          minLength: 3
+          pattern: "^[a-zA-Z]+$"
+          type: string
+          example: MarkUsername
+        firstname:
+          type: string
+          example: Mark
+        lastname:
+          type: string
+          example: Zuckerberg
+        country:
+          type: string
+        password:
+          maximum: 10
+          minLength: 5
+          pattern: |
+            ^(?=.*\d)(?=.*[!@#$%^&*()-_=+`~[\]{}|\\;:'",.<>/?])(?=.*[a-zA-Z]).+$
+          type: string
+          example: abcd12345!
+        email:
+          type: string
+          format: email
+          example: aaa@gmail.com
+    Recipe:
+      required:
+      - name
+      - Time
+      - Likes
+      - isVegan
+      - isVeget
+      - isGfree
+      - portions
+      - image
+      - intolerances
+      - cuisine 
+      - ingredients
+      type: object
+      properties:
+        name:
+          type: string
+          example: Pasta Alla Carbonara
+        Time:
+          type: number
+          example : 65
+        Likes:
+          type: number
+          example: 15
+        isVegan:
+          type: string
+          description: Vegan - True/False
+          example: false
+          items:
+            $ref : '#/componentes/schemas/isVegan'
+        isVeget:
+          type: string
+          description: Veget - True/False
+          example: false
+          items:
+            $ref : '#/componentes/schemas/isVeget'
+        isGfree:
+          type: string
+          description: Gluten Free - True/False
+          example: false
+          items:
+            $ref : '#/componentes/schemas/isGfree'
+        portions:
+          type: number
+          description : amount of portions
+          example  : 5
+        image :
+          type: obj
+        intolerances:
+        ingredients:
+          type: array
+          items:
+            $ref: '#/components/schemas/Ingredient'
+        steps:
+          type: array
+          items:
+            $ref: '#/components/schemas/Step'
+    Step:
+      required:
+      - stepDesc
+      - stepNumber
+      type: object
+      properties:
+        stepDesc:
+          type: string
+          example : Add egg wash
+        stepNumber:
+          type: number
+          example : 1  
+    Ingredient:
+      required:
+      - ingredient
+      - amount
+      - type
+      type: object
+      properties:
+        name:
+          type: string
+          example: bell pepper
+        amount:
+          type: number
+          example: 2
+        type:
+          type: string
+          example : Grams
+    isVegan:
+      type: string
+      enum:
+      - "true"
+      - "false" 
+    isVeget:
+      type: string
+      enum:
+      - "true"
+      - "false"      
+    isGfree:
+      type: string
+      enum:
+      - "true"
+      - "false"  
+    intolerances:
+      type: string
+      enum:
+      - Dairy
+      - Egg
+      - Gluten
+      - Grain
+      - Peanut
+      - Seafood
+      - Sesame
+      - Shellfish
+      - Soy
+      - Sulfite
+      - Tree Nut
+      - Wheat
+    diet:
+      type: string
+      enum:
+      - Gluten Free
+      - Ketogenic
+      - Vegetarian
+      - Lacto-Vegetarian
+      - Ovo-Vegetarian
+      - Vegan
+      - Pescetarian
+      - Paleo
+      - Primal
+      - Whole30
+    cuisine:
+      type: string
+      enum:
+      - African
+      - American
+      - British
+      - Cajun
+      - Caribbean
+      - Chinese
+      - Eastern European
+      - European
+      - French
+      - German
+      - Greek
+      - Indian
+      - Irish
+      - Italian
+      - Japanese
+      - Jewish
+      - Korean
+      - Latin American
+      - Mediterranean
+      - Mexican
+      - Middle Eastern
+      - Nordic
+      - Southern
+      - Spanish
+      - Thai
+      - Vietnamese
+    logout_body:
+      type: object
+      properties:
+        userToken:
+          type: string
+          example: dsa1d2as31
+        userID:
+          type: string
+          example: gaymark
+    recipefamily_body:
+      type: object
+      properties:
+        recipe:
+          $ref: '#/components/schemas/Recipe'
+        userToken:
+          type: string
+          example: asdsadasd213456
+    getArrayOfRecipes_body:
+      type: object
+      properties:
+        recipeIDs:
+          type: array
+          items:
+            type: string
+            example: rice123
+    recipeId_userId:
+      type: object
+      properties:
+        recipeId:
+          type: number
+          description: Chosen Recipe ID to add to X
+          example: 1540
+        userId:
+          type: number
+          description: User ID of user.
+          example : 14
+        source:
+          type: string
+          description : Source (API OR LOCAL DB)
+          example : API
+    userId:
+      type: object
+      properties:
+        userId:
+          type: number
+          description : user ID of user
+          example: 14
+    recipeId:
+      type: object
+      properties:
+        userId:
+          type: number
+          description : Recipe ID of recipe
+          example: 1540
+
+  securitySchemes:
+    cookieAuth:
+      type: userid
+      in: cookie
+      name: seassion
