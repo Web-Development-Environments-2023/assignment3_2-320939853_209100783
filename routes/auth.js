@@ -26,7 +26,7 @@ router.post("/Register", async (req, res, next) => {
     users = await DButils.execQuery("SELECT username from users");
     console.log(users)
     if (users.find((x) => x.username === user_details.username))
-      throw { status: 409, message: "Username taken" };
+      throw { status: 409, message: "Username taken, Please Choose Different Username" };
 
     // add the new username
     let hash_password = bcrypt.hashSync(
