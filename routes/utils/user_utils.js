@@ -227,7 +227,7 @@ async function handleCreateRecipe(name,Time,Likes,isVegan,isVeget,isGfree,portio
 }
 async function handleVisitRecipe(userId, recipeId, source) {
     let query = `INSERT INTO visited_recipes (user_id, recipe_id, timestamp, source)
-                 VALUES ('${userId}', ${recipeId}, CURRENT_TIMESTAMP(), ${source})
+                 VALUES ('${userId}', '${recipeId}', CURRENT_TIMESTAMP(), '${source}')
                  ON DUPLICATE KEY UPDATE timestamp = CURRENT_TIMESTAMP()`;
     let result = await DButils.execQuery(query);
     return result;
