@@ -96,6 +96,7 @@ function extractInfoFromRecipe(recipesArr){
             "diets" : element.diets,
             "cuisine": element.cuisines,
             "dairyFree": element.dairyFree,
+            "Likes":element.aggregateLikes
         };
         parsedRecipes.push(filteredRecpie);
     }
