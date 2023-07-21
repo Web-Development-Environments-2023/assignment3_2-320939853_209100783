@@ -80,7 +80,7 @@ router.post("/createRecipe",async (req, res, next) => {
     {await ingredients_utils.handleCreateIngredient(ingredients,createdRecipeID);}
     if (steps)
     {await steps_utils.handleCreateSteps(steps,createdRecipeID);}
-    res.status(200).send({ message: "Recipe Created, Ingredients Created, Steps Created, Recipe Has been Added to Personal Recipes. ", success: true });
+    res.status(200).send({ message: "Recipe Created, Ingredients Created, Steps Created, Recipe Has been Added to Personal Recipes. ",recipeid:createdRecipeID, success: true });
   } catch (error) {
     next(error);
   }
