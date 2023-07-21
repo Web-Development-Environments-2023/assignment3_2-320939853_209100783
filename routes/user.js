@@ -71,7 +71,8 @@ router.post("/createRecipe/uploadimage", upload.single('image'),async (req, res,
 router.post("/createRecipe",async (req, res, next) => {
   try {
     const userId = req.session.user_id;
-    let {name,Time,Likes,isVegan,isVeget,isGfree,portions,image,intolerances,cuisine, ingredients, steps} =  req.body;
+    let {name,Time,Likes,isVegan,isVeget,isGfree,portions,image,intolerances,cuisine, ingredients, steps,endpoint} =  req.body;
+    image = endpoint+"Images/"+image
     let createdRecipeID = await user_utils.functions.handleCreateRecipe(name,Time,Likes,isVegan,isVeget,isGfree,portions,image,intolerances,cuisine);
     //HERE'S LOGIC OF ADDING RECIPE TO PERSONAL
     await user_utils.functions.handleAddRecipeToPersonal(userId, createdRecipeID);
