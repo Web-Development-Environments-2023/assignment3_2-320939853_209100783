@@ -24,6 +24,7 @@ const upload = multer({ storage: storage });
  * Authenticate all incoming requests by middleware
  */
 router.use(async function (req, res, next) { 
+  console.log("errorrrr gere DB IS SHIT")
   if (req.session && req.session.user_id) {
     DButils.execQuery("SELECT user_id FROM users").then((users) => {
       if (users.find((x) => x.user_id === req.session.user_id)) {
@@ -32,6 +33,7 @@ router.use(async function (req, res, next) {
       }
     }).catch(err => next(err));
   } else {
+
     console.log("erorr is auth in users.js");
     res.sendStatus(401);
   }
