@@ -85,15 +85,13 @@ async function handleDeleteLikedRecipe(recipeId,userId)
 
 
 
-/**
- * @description this section is for the Get requests of user 
- * @method Get 
- */
+
 
 
 
 async function handleGetFamilyRecipes()
 {
+    //selecting all the recipes from the family table
     const rows = await DButils.execQuery(`select * from family_recipes`);
     console.log(rows);
     let recipes = [];
@@ -111,16 +109,7 @@ async function handleGetFamilyRecipes()
     }
     else{return null;}
 
-    // });
-    // recipes = []
-    // if (recipeId_List.length > 0){
-    //     recipes = await handleGetRecipesOfDB(recipeId_List);
-    //     recipes.forEach((recipe)=> {
-    //     });
-    // }
-    // else{
-    //     return null;
-    // }
+
 }
 async function handleGetPersonalRecipesOfUser(currentUserId)
 {
@@ -148,11 +137,22 @@ async function handleGetLikedRecipesOfUser(userId){
     return combineRecipeResults(API_recipes, Server_Recipes);
 }
 async function handleGetLastVisitedRecipes(userId, limit = 3) {
-    let query = `SELECT recipe_id FROM visited_recipes
-                 WHERE  user_id = '${userId}'
-                 ORDER BY timestamp DESC
-                 LIMIT ${limit}`;
+    let query
+    if (limit != -1){
+        query = `SELECT recipe_id FROM visited_recipes
+                    WHERE  user_id = '${userId}'
+                    ORDER BY timestamp DESC
+                    LIMIT ${limit}`;
+    }
+    else{
+        query = `SELECT recipe_id FROM visited_recipes
+                    WHERE  user_id = '${userId}'
+                    ORDER BY timestamp DESC`;
+    }
     let recipesList = await DButils.execQuery(query);
+    if (limit == -1){
+        return recipesList;
+    }
     let [Server_Recipes, API_recipes] = DistinctRecipes(recipesList);
     return combineRecipeResults(API_recipes, Server_Recipes);
 }

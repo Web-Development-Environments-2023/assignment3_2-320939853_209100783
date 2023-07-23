@@ -7,9 +7,7 @@ const bcrypt = require("bcrypt");
 
 router.post("/Register", async (req, res, next) => {
   try {
-    // parameters exists
-    // valid parameters
-    // username exists
+
     let user_details = {
       username: req.body.username,
       firstname: req.body.firstname,
@@ -17,9 +15,7 @@ router.post("/Register", async (req, res, next) => {
       country: req.body.country,
       password: req.body.password,
       email: req.body.email,
-      // FamilyRecipes : req.body.FamilyRecipes,
-      // LikedRecipes : req.body.LikedRecipes
-      // profilePic: req.body.profilePic
+
     }
     let users = [];
     console.log(user_details)
