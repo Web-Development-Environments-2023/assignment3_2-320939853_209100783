@@ -26,16 +26,16 @@ app.use(express.urlencoded({ extended: false })); // parse application/x-www-for
 app.use(express.static(path.join(__dirname, "static"))); //To serve static files such as images, CSS files,
 // and JavaScript files
 //local:
-// app.use(express.static(path.join(__dirname, "dist")));
+app.use(express.static(path.join(__dirname, "dist")));
 
 //remote:
-app.use(express.static(path.join('C:\\Users\\user\\Desktop\\Project\\assignment3_3-320939853_209100783\\dist')));
+// app.use(express.static(path.join('C:\\Users\\user\\Desktop\\Project\\assignment3_3-320939853_209100783\\dist')));
 app.get("/",function(req,res)
 { 
   //remote: 
-  res.sendFile(path.join('C:\\Users\\user\\Desktop\\Project\\assignment3_3-320939853_209100783\\dist\\index.html'));
+  // res.sendFile(path.join('C:\\Users\\user\\Desktop\\Project\\assignment3_3-320939853_209100783\\dist\\index.html'));
   //local:
-  // res.sendFile(__dirname+"/index.html");
+  res.sendFile(__dirname+"/index.html");
 
 });
 
