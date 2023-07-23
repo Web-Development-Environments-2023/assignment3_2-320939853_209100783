@@ -22,9 +22,11 @@ const upload = multer({ storage: storage });
 // const imagehandler = require('multer');
 /**
  * Authenticate all incoming requests by middleware
+ * This middleware function is used to authenticate all incoming requests.
+ * It checks if there is an active session with a valid user ID. If the session is valid, it allows the request to proceed to the next handler. 
+ * Otherwise, it returns a status code of 401 (Unauthorized).
  */
 router.use(async function (req, res, next) { 
-  console.log("errorrrr gere DB IS SHIT")
   if (req.session && req.session.user_id) {
     DButils.execQuery("SELECT user_id FROM users").then((users) => {
       if (users.find((x) => x.user_id === req.session.user_id)) {
@@ -44,6 +46,10 @@ router.use(async function (req, res, next) {
 /**
  * @description this section is for the post requests of user 
  * @method Post 
+ * This endpoint handles a POST request to add a recipe to the user's favorite recipes.
+ * It retrieves the user ID and recipe ID from the request body and then calls the markAsFavorite function from the user_utils module to mark the recipe
+ * as a favorite for the user. 
+ * If successful, it returns a status code of 200 and a success message; otherwise, it passes any errors to the error-handling middleware.
  */
 router.post('/addFavorite', async (req,res,next) => {
   try{
@@ -56,6 +62,13 @@ router.post('/addFavorite', async (req,res,next) => {
     next(error);
   }
 });
+/**
+ *  @method Post 
+ *  This endpoint handles a POST request to upload an image for a new recipe.
+ *  It uses the multer middleware to handle file uploads. If an image file is present in the request,
+ *  it saves the file to a specified destination and returns the image path in the response. If there is an error or no image file is found,
+ *  it passes the error to the error-handling middleware.
+ */
 router.post("/createRecipe/uploadimage", upload.single('image'),async (req, res, next) => {
   try{
     if (req.file){
@@ -69,7 +82,14 @@ router.post("/createRecipe/uploadimage", upload.single('image'),async (req, res,
     next(erorr);
   }
 });
-
+/**
+ * @method POST
+ * This endpoint handles a POST request to create a new recipe.
+ *  It expects various recipe details (name, time, likes, dietary properties, etc.) in the request body.
+ *  The function then calls different utility functions to handle various aspects of the recipe creation process,
+ *  such as adding the recipe to the user's personal recipes, creating ingredients and steps for the recipe, etc. If successful,
+ *  it returns a status code of 200 and a success message; otherwise, it passes any errors to the error-handling middleware.
+ */
 router.post("/createRecipe",async (req, res, next) => {
   try {
     const userId = req.session.user_id;
@@ -88,7 +108,12 @@ router.post("/createRecipe",async (req, res, next) => {
     next(error);
   }
 });
-
+/**
+ * @method POST
+ * This endpoint handles a POST request to mark a recipe as visited by the user. It expects the user ID and recipe ID in the request body.
+ *  The function then calls the handleVisitRecipe function from the user_utils module to mark the recipe as visited.
+ *  If successful, it returns a status code of 200 and a success message; otherwise, it passes any errors to the error-handling middleware.
+ */
 router.post("/visitRecipe", async (req, res, next) => {
   try {
     const userId = req.session.user_id;
@@ -99,7 +124,12 @@ router.post("/visitRecipe", async (req, res, next) => {
     next(error);
   }
 });
-
+/**
+ * @method POST
+ * This endpoint handles a POST request to mark a recipe as liked by the user. It expects the user ID and recipe ID in the request body.
+ *  The function then calls the handleAddLikedRecipe function from the user_utils module to add the recipe to the user's liked recipes.
+ *  If successful, it returns a status code of 200 and a success message; otherwise, it passes any errors to the error-handling middleware.
+ */
 router.post("/likeRecipe", async (req, res, next) => {
   try {
     const userId = req.session.user_id;
@@ -117,9 +147,12 @@ router.post("/likeRecipe", async (req, res, next) => {
 /**
  * @description this section is for the GET requests of user 
  * @method Get 
+ * This endpoint handles a GET request to retrieve the favorite recipes of a specific user. It expects the user ID as a parameter in the URL.
+ *  The function then calls the handleGetFavoriteRecipesOfUser function from the user_utils module to fetch the user's favorite recipes.
+ *  If successful, it returns a status code of 200 and the array of favorite recipes; otherwise,
+ *  it passes any errors to the error-handling middleware.
  */
 //EXAMPLE OF GETTING FAVORITE RECIPES OF UserID : 1 
-//http://127.0.0.1:3000/users/favoriterecipes/1
  router.get('/favoriterecipes/:userId', async (req,res,next) => {
   try{
     let requestedUserId = req.params.userId;
@@ -131,9 +164,11 @@ router.post("/likeRecipe", async (req, res, next) => {
   }
 });
 /**
- * 
- *
+
  * @returns {Personal_Recipes_Array}, an Array of User's Personal Recipes. 
+ * This endpoint handles a GET request to retrieve the personal recipes of the currently authenticated user.
+ *  It uses the user ID from the active session to call the handleGetPersonalRecipesOfUser function from the user_utils module, which fetches the user's personal recipes.
+ * If successful, it returns a status code of 200 and the array of personal recipes; otherwise, it passes any errors to the error-handling middleware.
  */
 router.get('/personalRecipes', async (req,res,next) => {
   try{
@@ -146,6 +181,9 @@ router.get('/personalRecipes', async (req,res,next) => {
 });
 /**
  * @returns {Family_Recipes_Array}, an Array of User's Family Recipes.
+ * This endpoint handles a GET request to retrieve the family recipes.
+ *  It calls the handleGetFamilyRecipes function from the user_utils module to fetch the family recipes.
+ *  If successful, it returns a status code of 200 and the array of family recipes; otherwise, it passes any errors to the error-handling middleware.
  */
 router.get("/familyRecipes", async (req,res,next) => {
   try{
@@ -155,6 +193,13 @@ router.get("/familyRecipes", async (req,res,next) => {
     next(error);
   }
 })
+/**
+ * @method GET
+ * This endpoint handles a GET request to retrieve the last visited recipes of the currently authenticated user.
+ *  It uses the user ID from the active session and accepts an optional limit query parameter to specify the number of visited recipes to retrieve.
+ *  It calls the handleGetLastVisitedRecipes function from the user_utils module to fetch the last visited recipes.
+ *  If successful, it returns a status code of 200 and the array of last visited recipes; otherwise, it passes any errors to the error-handling middleware.
+ */
 router.get("/visitedRecipes", async (req,res,next) => {
   try{
 
@@ -162,6 +207,7 @@ router.get("/visitedRecipes", async (req,res,next) => {
     //anyway, for testing
     const userId = req.session.user_id;
     let limit = req.query.limit;
+    console.log(limit)
     let visitedRecipes = await user_utils.functions.handleGetLastVisitedRecipes(userId,limit);
     res.status(200).send({message:"Retrieved Last 3 Visited Recipes ", success: true,"visitedRecipes":visitedRecipes});
     console.log("Handel visited Recipes");
@@ -171,6 +217,12 @@ router.get("/visitedRecipes", async (req,res,next) => {
     next(error);
   }
 });
+/**
+ * @method GET
+ * This endpoint handles a GET request to retrieve an image. It expects the image name as a query parameter in the URL.
+ *  The function then sends the image file with the specified name in the response. 
+ * If there is an error, it passes it to the error-handling middleware.
+ */
 router.get("/getimage",async (req, res, next) => {
   try{
     let imageName = req.query.imageName;
@@ -181,28 +233,14 @@ router.get("/getimage",async (req, res, next) => {
 
 });
 
-// router.get("/searchrecipe/:dish", async (req,res,next) => {
-//   try{
-//     let query = req.params.dish;
-//     let { cuisine, diet, intolerance, number } = req.query;
-//     let recipesStr = ""
-//     let recpiesFromSearch = await user_utils.functions.handleGetSearchRecipes(query, cuisine, diet, intolerance, number);
-//     recpiesFromSearch.forEach(element =>{
-//        recipesStr += element.id+",";
-//     });
-//     console.log(recipesStr);
-//     let ans = await recipe_utils.getArrayOfRecipes(recipesStr);
-//     let parsed = recipe_utils.extractInfoFromRecipe(ans);
-//     res.status(200).send(parsed);
-//     } catch(error){
-//     next(error);
-//   }
-// });
-
 
 /**
  * @description this section is for the DELETE requests of user 
  * @method Delete 
+ * This endpoint handles a DELETE request to delete an image. 
+ * It expects the image name as a query parameter in the URL.
+ * The function then calls the handleDeleteImage function from the user_utils module to delete the image file with the specified name. 
+ * If successful, it returns a status code of 200; otherwise, it passes any errors to the error-handling middleware.
  */
 router.delete("/deleteimage",async (req, res, next) => {
   try{
@@ -213,7 +251,12 @@ router.delete("/deleteimage",async (req, res, next) => {
   }
 
 });
-
+/**
+ * This endpoint handles a DELETE request to remove a recipe from the user's favorite recipes.
+ * It expects the user ID and recipe ID in the request body.
+ * The function then calls the handleDeleteFavoriteRecipesOfUser function from the user_utils module to remove the recipe from the user's favorites. 
+ * If successful, it returns a status code of 200; otherwise, it passes any errors to the error-handling middleware.
+ */
 router.delete('/removeFavoriteRecipe', async (req,res,next) => {
   try{
     let userId = req.body.user_id;
@@ -229,7 +272,13 @@ router.delete('/removeFavoriteRecipe', async (req,res,next) => {
     next(error);
   }
 })
-
+/**
+ * @method DELETE
+ * This endpoint handles a DELETE request to remove a recipe from the user's personal recipes.
+ *  It expects the user ID and recipe ID as query parameters in the URL. The function then calls the handleDeletePersonalRecipe function 
+ * from the user_utils module to remove the recipe from the user's personal recipes. If successful, it returns a status code of 200; otherwise,
+ *  it passes any errors to the error-handling middleware.
+ */
 router.delete('/removePersonalRecipe', async (req,res,next) => {
   try{
     let userId = req.query.userId;
@@ -245,7 +294,11 @@ router.delete('/removePersonalRecipe', async (req,res,next) => {
     next(error);
   }
 })
-
+/**
+ * This endpoint handles a DELETE request to remove a recipe from the user's family recipes.
+ *  It expects the user ID and recipe ID as query parameters in the URL. The function then calls the handleDeleteFamilyRecipeOfUser
+ *  function from the user_utils module to remove the
+ */
 router.delete('/removeFamilyRecipe', async (req,res,next) => {
   try{
     let userId = req.query.userId;

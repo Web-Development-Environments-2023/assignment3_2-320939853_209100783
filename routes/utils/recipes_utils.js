@@ -40,7 +40,7 @@ async function handleGetRandomRecipes(number_of_recipes) {
         }
     });
 }
-
+// This function handle the api call to get all the info about the recipes in bulk
 async function handlegetArrayOfRecipes(recipesIds) {
     let ans =  await axios.get(`${api_domain}/informationBulk`, {
         headers: {
@@ -53,7 +53,7 @@ async function handlegetArrayOfRecipes(recipesIds) {
     });
     return ans
 }
-
+// This function get a random 3 recipes
 async function getRandomRecipes(number_of_recipes) {
     let recipe_info = await handleGetRandomRecipes(number_of_recipes);
     let recipes = recipe_info.data.recipes
@@ -61,12 +61,12 @@ async function getRandomRecipes(number_of_recipes) {
 
     return recipes
 }
-
+// This fucntion handle the the get the infromation about the recipe
 async function getRecipeDetails(recipe_id,nutritional=false) {
     let recipe_info = await handlegetRecipeDetails(recipe_id,nutritional);
     return recipe_info[0];
 }
-
+// This function handle get the recipes from the DB 
 async function getRecipeDetailsDB(recipe_id) {
     let recipe_info = await users.functions.handleGetRecipesOfDB([recipe_id]);
     return recipe_info[0];
@@ -78,7 +78,7 @@ async function getArrayOfRecipes(recipesIds) {
     return recipe_info.data;
     
 }
-
+// This function Parse the recipes acording to the format agreed by the Fron end
 function extractInfoFromRecipe(recipesArr){
     let parsedRecipes = [];
     recipesArr.forEach((element) =>{
@@ -104,6 +104,8 @@ function extractInfoFromRecipe(recipesArr){
     return parsedRecipes;
 
 }
+//This function Parsing the Ingiridiands of each of the Steps from the spoonacular 
+
 function parseIngridFromAPI(items){
     let parsedIngredient = [];
     items.forEach(element =>{
@@ -118,6 +120,8 @@ function parseIngridFromAPI(items){
     });
     return parsedIngredient;
 }
+//This function Parsing the steps of each of the Steps from the spoonacular 
+
 function parseStepsFromAPI(items){
     let parsedSteps = [];
     items.forEach((elem)=>{elem.steps.forEach((element) =>{

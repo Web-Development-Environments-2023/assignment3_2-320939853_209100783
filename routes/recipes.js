@@ -33,6 +33,10 @@ router.get("/searchrecipe/:dish", async (req,res,next) => {
   }
 });
 
+/**
+ * @method GET 
+ * gets a random recipes 
+ */
 
 router.get("/randomrecipes", async (req, res, next) => {
   try {
@@ -45,7 +49,10 @@ router.get("/randomrecipes", async (req, res, next) => {
   }
 });
 // 
-
+/**
+ * @method GET 
+ * gets a recpie by the ID of the recpie and also the Source of the Recipe API/DB 
+ */
 router.get("/getrecipe/:recipeId", async (req, res, next) => {
   try {
     let recipeId = req.params.recipeId;
@@ -65,10 +72,6 @@ router.get("/getrecipe/:recipeId", async (req, res, next) => {
 });
 
 
-
-/**
- * @todo Write this endpoint in the yaml file 
- */
 
 
 /**
